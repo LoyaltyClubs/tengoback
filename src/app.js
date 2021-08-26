@@ -10,5 +10,9 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}));
 
 app.use("/api/pos", require("./routes/pos.routes"))
+app.use("/api/ciudad", require("./routes/ciudad.routes"))
+app.use("/api/plan", require("./routes/plan.routes"))
+app.use("/api/rubro", require("./routes/rubro.routes"))
+app.use("/api/empresa", require("./routes/empresa.routes"))
 
 module.exports = app;
