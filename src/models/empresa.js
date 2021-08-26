@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     plan_id: DataTypes.INTEGER,
     deleted: DataTypes.BOOLEAN
   }, {
+    freezeTableName: true,
     sequelize,
     modelName: 'Empresa',
   });

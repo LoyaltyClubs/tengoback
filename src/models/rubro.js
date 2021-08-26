@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     estado: DataTypes.BOOLEAN,
     deleted: DataTypes.BOOLEAN
   }, {
+    freezeTableName: true,
     sequelize,
     modelName: 'Rubro',
   });

@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     recargo: DataTypes.DECIMAL,
     deleted: DataTypes.BOOLEAN
   }, {
+    freezeTableName: true,
     sequelize,
     modelName: 'Plan',
   });
