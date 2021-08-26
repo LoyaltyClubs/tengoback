@@ -14,10 +14,10 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": "12345678",
-    "database": "tengo_production",
-    "host": "127.0.0.1",
+    "username": "ba0423b3e801bd",
+    "password": "8ff8984e",
+    "database": "heroku_b70aba56607b81f",
+    "host": "us-cdbr-east-04.cleardb.com",
     "dialect": "mysql"
   }
 }
