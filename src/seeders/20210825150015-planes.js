@@ -16,6 +16,8 @@ module.exports = {
       seguro: 0,
       mantenimiento: 0,
       recargo: 2.8,
+      interes: 2.78,
+      mora: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -24,6 +26,8 @@ module.exports = {
       seguro: 7,
       mantenimiento: 13,
       recargo: 2.8,
+      interes: 2.78,
+      mora: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -32,6 +36,8 @@ module.exports = {
       seguro: 7,
       mantenimiento: 20,
       recargo: 2.80,
+      interes: 2.78,
+      mora: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -40,6 +46,8 @@ module.exports = {
       seguro: 0,
       mantenimiento: 0.00,
       recargo: 1,
+      interes: 2.78,
+      mora: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});

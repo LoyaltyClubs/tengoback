@@ -16,6 +16,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      nit: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       rubro_id: {
         type: Sequelize.INTEGER,
         references: {

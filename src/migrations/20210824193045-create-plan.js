@@ -29,6 +29,14 @@ module.exports = {
         type: Sequelize.DECIMAL(10,2),
         allowNull: false
       },
+      interes: {
+        type: Sequelize.DECIMAL(10,2),
+        allowNull: false
+      },
+      mora: {
+        type: Sequelize.DECIMAL(10,2),
+        allowNull: false
+      },
       deleted: {
         type:Sequelize.BOOLEAN,
         allowNull: false,

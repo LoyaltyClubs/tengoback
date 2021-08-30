@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     seguro: DataTypes.DECIMAL,
     mantenimiento: DataTypes.DECIMAL,
     recargo: DataTypes.DECIMAL,
+    interes: DataTypes.DECIMAL,
+    mora: DataTypes.DECIMAL,
     deleted: DataTypes.BOOLEAN
   }, {
     freezeTableName: true,
