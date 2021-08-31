@@ -23,14 +23,14 @@ module.exports = {
       cliente_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'cliente',
+          model: 'Cliente',
           key: 'id'
-        }
+        }  
       },
       tipo_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'tipo_tarjeta',
+          model: 'Tipo_tarjeta',
           key: 'id'
         }
       },
