@@ -24,8 +24,11 @@ posController.leerTarjeta = (req, res) => {
 }
 
 posController.finaciamiento = (req, res) => {
-    var total = parseFloat(req.body.monto_financiar)+req.body.monto_financiar*0.02;
+    var total = parseFloat(req.body.monto_financia)+req.body.monto_financia*0.02;
     var cuota = total/req.body.cantidad_cuotas;
+    var numero_tarjeta = req.body.numero_tarjeta;
+
+    // Segun el numero la tarjeta buscar al cliente, si no es cliente devolver, no es de un cliente
 
     const respPago = {
         "comercio":req.body.comercio,//se recibe
@@ -36,7 +39,7 @@ posController.finaciamiento = (req, res) => {
         "transaccion_hora":req.body.transaccion_hora,//se recibe
         "vendedor_nro":req.body.vendedor_nro,//se recibe
         "transaccion_tipo":req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje":000,
+        "mensaje_codigo":req.body.mensaje_codigo,//se recibe,
         "mensaje":"Proceso realizado correctamente",
         "apellido_paterno":"arroyo",
         "apellido_materno":"cuellar",
@@ -49,13 +52,13 @@ posController.finaciamiento = (req, res) => {
         "monto_pago_anticipado":0.0,
         "permite_recuperado":0,
         "monto_deuda_castigada":0.00,
-        "permite_p_minimo":0,
-        "pie_minimo_p_minimo":0.00,
-        "saldo_p_minimo":0.00,
+        "permite_pago_minimo":0,
+        "pie_minimo_pago_minimo":0.00,
+        "saldo_pago_minimo":0.00,
         "permite_repactacion":0,
         "deuda_total":100.00,
         "pie_minimo_repactacion":0.00,
-        "descuento":0.00,//se recibe
+        "descuento":0.00,
         "saldo_repactacion":0.00,
         "monto_afecto":0.00
     }
@@ -69,7 +72,7 @@ posController.finaciamiento = (req, res) => {
         "transaccion_hora":req.body.transaccion_hora,//se recibe
         "vendedor_nro":req.body.vendedor_nro,//se recibe
         "transaccion_tipo":req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje":"000",
+        "codigo_mensaje":req.body.mensaje_codigo,
         "mensaje":"Proceso realizado correctamente",
         "apellido_paterno":"arroyo",
         "apellido_materno":"cuellar",
@@ -84,7 +87,7 @@ posController.finaciamiento = (req, res) => {
         "cantidad_cuotas":req.body.cantidad_cuotas,//se recibe
         "fecha_primer_vencimiento":"20210809",
         "valor_cuota":cuota,//se calcula
-        "gasto_evaluacion_cuota":0.0,
+        "gasto_evaluacion":0.0,
         "total_pagar_mensual":cuota,//se calcula
         "numero_tarjeta":req.body.numero_tarjeta,//se recibe
         "mensaje_usuario":"Ninguno",
@@ -108,6 +111,7 @@ posController.validarTarjeta = (req, res) => {
 
 posController.activarTarjeta = (req, res) => {
     // recibir parametros y guardar en bd farmacorp
+    // cedula, fechaActivacion, idTarjeta
     res.json(
         {
             "ok":true
@@ -125,16 +129,20 @@ posController.actualizarTarjeta = (req, res) => {
 }
 
 posController.pagoCuota = (req, res) => {
+    //tipo_pago = "ABO", forma_pago="1", nro_comprobante="3523523"
     const resp = {
         "comercio":req.body.comercio,//se recibe
         "local":req.body.local,//se recibe
         "caja":req.body.caja,//se recibe
+        "transaccion_nro":req.body.transaccion_nro,
+        "transaccion_fecha":req.body.transaccion_fecha,
+        "transaccion_hora":req.body.transaccion_hora,
         "vendedor_nro":req.body.vendedor_nro,//se recibe
         "transaccion_tipo":req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje":req.body.codigo_mensaje,
-        "codigo_respuesta":"0000",
+        "mensaje_codigo":req.body.mensaje_codigo,
+        "respuesta_codigo":"0000",
         "mensaje":"Pago realizado correctamente",
-        "codigo_autorizacion":"000000000012",
+        "autorizacion_codigo":"000000000012",
         "monto_afecto_pagado":req.body.monto_abonado
     }
     res.json({"element":resp,"errors":[],"messages":[],"hasError":false,"hasMessages":false});
@@ -144,12 +152,14 @@ posController.confirmacionFinanciamiento = (req, res) => {
     const resp = {
         "comercio":req.body.comercio,//se recibe
         "local":req.body.local,//se recibe
-        "caja":req.body.caja,//se recibe
+        "caja":req.body.caja,//se recibe,
+        "transaccion_nro":req.body.transaccion_nro,
+        "transaccion_fecha":req.body.transaccion_fecha,
+        "transaccion_hora":req.body.transaccion_hora,
         "vendedor_nro":req.body.vendedor_nro,//se recibe
         "transaccion_tipo":req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje":req.body.codigo_mensaje,
+        "codigo_mensaje":req.body.mensaje_codigo,
         "codigo_respuesta":"0000",
-        "mensaje":"Correcto",
         "bolet_nro":"   "
     }
     res.json({"element":resp,"errors":[],"messages":[],"hasError":false,"hasMessages":false})
