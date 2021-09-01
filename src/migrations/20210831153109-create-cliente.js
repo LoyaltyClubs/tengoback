@@ -26,30 +26,64 @@ module.exports = {
       sexo: {
         type: Sequelize.STRING
       },
-      ci: { type: Sequelize.integer },
-      calle_particular: { type: Sequelize.STRING },
-      zona: { type: Sequelize.STRING },
-      provincia: { type: Sequelize.STRING },
-      barrio: { type: Sequelize.STRING },
+      ci: {
+        type: Sequelize.INTEGER
+      },
+      calle_particular: {
+        type: Sequelize.STRING
+      },
+      zona: {
+        type: Sequelize.STRING
+      },
+      provincia: {
+        type: Sequelize.STRING
+      },
+      barrio: {
+        type: Sequelize.STRING
+      },
       ciudad_id: {
-        type: Sequelize.integer,
+        type: Sequelize.INTEGER,
         references: {
           model: 'Ciudad',
           key: 'id'
         }
       },
-      telefono_fijo: { type: Sequelize.integer },
-      telefono_celular: { type: Sequelize.integer },
-      email: { type: Sequelize.STRING },
-      nombre_referencia: { type: Sequelize.STRING },
-      provincia_referencia: { type: Sequelize.STRING },
-      telefono_referencia: { type: Sequelize.STRING },
-      tipo_tel_referencia: { type: Sequelize.STRING },
-      ciudad_referencia: { type: Sequelize.STRING },
-      dia_pago: { type: Sequelize.integer },
-      linea_credito: { type: Sequelize.decimal },
-      estado: { type: Sequelize.string },
-      deleted: { type: Sequelize.BOOLEAN },
+      telefono_fijo: {
+        type: Sequelize.INTEGER
+      },
+      telefono_celular: {
+        type: Sequelize.INTEGER
+      },
+      email: {
+        type: Sequelize.STRING
+      },
+      nombre_referencia: {
+        type: Sequelize.STRING
+      },
+      provincia_referencia: {
+        type: Sequelize.STRING
+      },
+      telefono_referencia: {
+        type: Sequelize.STRING
+      },
+      tipo_tel_referencia: {
+        type: Sequelize.STRING
+      },
+      ciudad_referencia: {
+        type: Sequelize.STRING
+      },
+      dia_pago: {
+        type: Sequelize.INTEGER
+      },
+      linea_credito: {
+        type: Sequelize.DECIMAL
+      },
+      estado: {
+        type: Sequelize.STRING
+      },
+      deleted: {
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -61,6 +95,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Clientes');
+    await queryInterface.dropTable('Cliente');
   }
 };
