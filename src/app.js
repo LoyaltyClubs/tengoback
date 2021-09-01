@@ -17,5 +17,8 @@ app.use("/api/plan", require("./routes/plan.routes"))
 app.use("/api/rubro", require("./routes/rubro.routes"))
 app.use("/api/empresa", require("./routes/empresa.routes"))
 app.use("/api/cliente", require("./routes/cliente.routes"))
+app.use("/api/credito", require("./routes/credito.routes"))
+app.use("/api/cuotas", require("./routes/cuotas.routes"))
+app.use("/api/tipo_tarjeta", require("./routes/tipo_tarjeta.routes"))
 
 module.exports = app;
