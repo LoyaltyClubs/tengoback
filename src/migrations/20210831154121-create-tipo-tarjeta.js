@@ -23,7 +23,7 @@ module.exports = {
         defaultValue: false
       },
       monto: {
-        type: sequelize.DOUBLE
+        type: Sequelize.DOUBLE
       },
       createdAt: {
         allowNull: false,
