@@ -12,6 +12,7 @@ tipo_tarjetaController.create = (req, res) => {
     return tipo_tarjeta.create({
         nombre: req.body.nombre,
         estado: req.body.estado,
+        deleted: false,
         createdAt: new Date(),
         updatedAt: new Date()
     }).then(tipo_tarjeta => res.status(200).send(tipo_tarjeta))

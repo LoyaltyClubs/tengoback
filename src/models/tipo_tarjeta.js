@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Tipo_tarjeta.init({
     nombre: DataTypes.STRING,
+    monto: DataTypes.DOUBLE,
     stado: DataTypes.BOOLEAN,
     deleted: DataTypes.BOOLEAN
   }, {

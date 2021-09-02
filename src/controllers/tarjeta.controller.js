@@ -11,10 +11,11 @@ TarjetaController.get = (req, res) => {
 TarjetaController.create = (req, res) => {
     return tarjeta.create({
         numero: req.body.numero,
-        fecha_nacimiento: req.body.fecha_nacimiento,
+        fecha_vencimiento: req.body.fecha_vencimiento,
         estado: req.body.estado,
         cliente_id: req.body.cliente_id,
         tipo_id: req.body.tipo_id,
+        deleted: false,
         createdAt: new Date(),
         updatedAt: new Date()
     }).then(tarjeta => res.status(200).send(tarjeta))
@@ -25,10 +26,11 @@ TarjetaController.actualizar = (req, res) => {
     const { id } = req.params;
     return tarjeta.update({
         numero: req.body.numero,
-        fecha_nacimiento: req.body.fecha_nacimiento,
+        fecha_vencimiento: req.body.fecha_vencimiento,
         estado: req.body.estado,
         cliente_id: req.body.cliente_id,
         tipo_id: req.body.tipo_id,
+        deleted: false,
         updatedAt: new Date()
     },
         {

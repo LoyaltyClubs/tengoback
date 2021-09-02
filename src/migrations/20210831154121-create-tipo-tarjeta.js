@@ -1,4 +1,7 @@
 'use strict';
+
+const { sequelize } = require("../models");
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Tipo_tarjeta', {
@@ -17,6 +20,9 @@ module.exports = {
       deleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
+      },
+      monto: {
+        type: sequelize.DOUBLE
       },
       createdAt: {
         allowNull: false,
