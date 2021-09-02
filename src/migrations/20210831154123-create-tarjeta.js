@@ -35,6 +35,9 @@ module.exports = {
           key: 'id'
         }
       },
+      saldo: {
+        type: Sequelize.DOUBLE
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
