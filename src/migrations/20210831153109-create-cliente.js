@@ -20,7 +20,7 @@ module.exports = {
       estado_civil: {
         type: Sequelize.STRING
       },
-      fecha_nacimineto: {
+      fecha_nacimiento: {
         type: Sequelize.DATE
       },
       sexo: {
