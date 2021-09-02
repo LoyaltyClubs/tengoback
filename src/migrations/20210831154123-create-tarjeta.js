@@ -18,14 +18,15 @@ module.exports = {
         type: Sequelize.STRING
       },
       deleted: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       cliente_id: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Cliente',
           key: 'id'
-        }  
+        }
       },
       tipo_id: {
         type: Sequelize.INTEGER,

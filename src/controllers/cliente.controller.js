@@ -37,7 +37,7 @@ clienteController.create = async (req, res) => {
         dia_pago: req.body.dia_pago,
         linea_credito: req.body.linea_credito,
         estado: req.body.estado,
-        deleted: req.body.deleted,
+        deleted: false,
         createdAt: new Date(),
         updatedAt: new Date()
     }).then(cliente => res.status(200).send(cliente))
