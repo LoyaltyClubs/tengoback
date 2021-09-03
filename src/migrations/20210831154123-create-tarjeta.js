@@ -30,6 +30,7 @@ module.exports = {
       },
       tipo_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Tipo_tarjeta',
           key: 'id'

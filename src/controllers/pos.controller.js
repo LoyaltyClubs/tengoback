@@ -51,6 +51,7 @@ posController.leerTarjeta = async (req, res) => {
         if (respId.length == 0) {
             msg = 'Numero de tarjeta incorrecto'
             objRespuesta(
+                'no',
                 null,
                 null,
                 null,
@@ -122,12 +123,13 @@ posController.leerTarjeta = async (req, res) => {
         console.log(error);
         // msgError(error, 500)
         objRespuesta(
+            'no',
             null,
             null,
             null,
             null,
             null,
-            error,
+            error.name,
             error.message
         )
         return res.status(500).json({ modeloResp })

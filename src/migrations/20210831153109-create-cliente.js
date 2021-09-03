@@ -43,6 +43,7 @@ module.exports = {
       },
       ciudad_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Ciudad',
           key: 'id'
