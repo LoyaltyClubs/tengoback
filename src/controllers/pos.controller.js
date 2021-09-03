@@ -1,4 +1,5 @@
 const tarjeta = require('../models').Tarjeta
+const cliente = require('../models').Cliente
 
 const posController = {}
 
@@ -46,7 +47,6 @@ posController.leerTarjeta = async (req, res) => {
             }
         })
         //////////
-
         //validar que el id exista
         if (respId.length == 0) {
             msg = 'Numero de tarjeta incorrecto'
@@ -136,73 +136,111 @@ posController.leerTarjeta = async (req, res) => {
     }
 }
 
-posController.finaciamiento = (req, res) => {
-    var total = parseFloat(req.body.monto_financiar) + req.body.monto_financiar * 0.02;
-    var cuota = total / req.body.cantidad_cuotas;
-
-    const respPago = {
-        "comercio": req.body.comercio,//se recibe
-        "local": req.body.local,//se recibe
-        "caja": req.body.caja,//se recibe
-        "transaccion_nro": req.body.transaccion_nro,//se recibe
-        "transaccion_fecha": req.body.transaccion_fecha,//se recibe
-        "transaccion_hora": req.body.transaccion_hora,//se recibe
-        "vendedor_nro": req.body.vendedor_nro,//se recibe
-        "transaccion_tipo": req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje": 000,
-        "mensaje": "Proceso realizado correctamente",
-        "apellido_paterno": "arroyo",
-        "apellido_materno": "cuellar",
-        "nombres": "ashley erwin joel",
-        "estado_cliente": "",
-        "morosidad": 0,
-        "permite_abono": 1,
-        "total_pagar": 42.22,
-        "monto_vencido": 0.0,
-        "monto_pago_anticipado": 0.0,
-        "permite_recuperado": 0,
-        "monto_deuda_castigada": 0.00,
-        "permite_p_minimo": 0,
-        "pie_minimo_p_minimo": 0.00,
-        "saldo_p_minimo": 0.00,
-        "permite_repactacion": 0,
-        "deuda_total": 100.00,
-        "pie_minimo_repactacion": 0.00,
-        "descuento": 0.00,//se recibe
-        "saldo_repactacion": 0.00,
-        "monto_afecto": 0.00
+posController.finaciamiento = async (req, res) => {
+    const {
+        numero_tarjeta,
+        comercio,
+        local,
+        caja,
+        transaccion_nro,
+        transaccion_fecha,
+        transaccion_hora,
+        vendedor_nro,
+        transaccion_tipo,
+        monto_financiar,
+        cantidad_cuotas
+    } = req.body
+    // var total = parseFloat(req.body.monto_financiar) + req.body.monto_financiar * 0.02;
+    // var cuota = total / req.body.cantidad_cuotas;
+    let modeloResp, modeloRespPago = {}
+    const objRespPago = (apellido_paterno, apellido_materno, nombres) => {
+        modeloRespPago = {
+            "comercio": comercio,//se recibe
+            "local": local,//se recibe
+            "caja": caja,//se recibe
+            "transaccion_nro": transaccion_nro,//se recibe
+            "transaccion_fecha": transaccion_fecha,//se recibe
+            "transaccion_hora": transaccion_hora,//se recibe
+            "vendedor_nro": vendedor_nro,//se recibe
+            "transaccion_tipo": transaccion_tipo,//se recibe
+            "codigo_mensaje": 000,
+            "mensaje": "Proceso realizado correctamente",
+            "apellido_paterno": apellido_paterno,
+            "apellido_materno": apellido_materno,
+            "nombres": nombres,
+            "estado_cliente": "",
+            "morosidad": 0,
+            "permite_abono": 1,
+            "total_pagar": 42.22,
+            "monto_vencido": 0.0,
+            "monto_pago_anticipado": 0.0,
+            "permite_recuperado": 0,
+            "monto_deuda_castigada": 0.00,
+            "permite_p_minimo": 0,
+            "pie_minimo_p_minimo": 0.00,
+            "saldo_p_minimo": 0.00,
+            "permite_repactacion": 0,
+            "deuda_total": 100.00,
+            "pie_minimo_repactacion": 0.00,
+            "descuento": 0.00,//se recibe
+            "saldo_repactacion": 0.00,
+            "monto_afecto": 0.00
+        }
     }
 
-    const resp = {
-        "comercio": req.body.comercio,//se recibe
-        "local": req.body.local,//se recibe
-        "caja": req.body.caja,//se recibe
-        "transaccion_nro": req.body.transaccion_nro,//se recibe
-        "transaccion_fecha": req.body.transaccion_fecha,//se recibe
-        "transaccion_hora": req.body.transaccion_hora,//se recibe
-        "vendedor_nro": req.body.vendedor_nro,//se recibe
-        "transaccion_tipo": req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje": "000",
-        "mensaje": "Proceso realizado correctamente",
-        "apellido_paterno": "arroyo",
-        "apellido_materno": "cuellar",
-        "nombres": "ashley erwin joel",
-        "monto_financiar": parseFloat(req.body.monto_financiar),//se recibe
-        "total_credito": total,
-        "tasa_interes": 2,
-        "tasa_impuesto_timbre": 2,
-        "monto_retencion": 0.00,
-        "monto_comision": 0.00,
-        "codigo_autorizacion": "000000000012",
-        "cantidad_cuotas": req.body.cantidad_cuotas,//se recibe
-        "fecha_primer_vencimiento": "20210809",
-        "valor_cuota": cuota,//se calcula
-        "gasto_evaluacion_cuota": 0.0,
-        "total_pagar_mensual": cuota,//se calcula
-        "numero_tarjeta": req.body.numero_tarjeta,//se recibe
-        "mensaje_usuario": "Ninguno",
-        "carnet": "7842022"
+    const objResp = (apellido_paterno, apellido_materno, nombres) => {
+        modeloResp = {
+            "comercio": comercio,//se recibe
+            "local": local,//se recibe
+            "caja": caja,//se recibe
+            "transaccion_nro": transaccion_nro,//se recibe
+            "transaccion_fecha": transaccion_fecha,//se recibe
+            "transaccion_hora": transaccion_hora,//se recibe
+            "vendedor_nro": vendedor_nro,//se recibe
+            "transaccion_tipo": transaccion_tipo,//se recibe
+            "codigo_mensaje": "000",
+            "mensaje": "Proceso realizado correctamente",
+            "apellido_paterno": apellido_paterno,
+            "apellido_materno": apellido_materno,
+            "nombres": nombres,
+            "monto_financiar": parseFloat(monto_financiar),//se recibe
+            "total_credito": total,
+            "tasa_interes": 2,
+            "tasa_impuesto_timbre": 2,
+            "monto_retencion": 0.00,
+            "monto_comision": 0.00,
+            "codigo_autorizacion": "000000000012",
+            "cantidad_cuotas": cantidad_cuotas,//se recibe
+            "fecha_primer_vencimiento": "20210809",
+            "valor_cuota": cuota,//se calcula
+            "gasto_evaluacion_cuota": 0.0,
+            "total_pagar_mensual": cuota,//se calcula
+            "numero_tarjeta": numero_tarjeta,//se recibe
+            "mensaje_usuario": "Ninguno",
+            "carnet": "7842022"
+        }
+
     }
+
+    try {
+        const respTarjeta = await tarjeta.findOne({
+            where: {
+                numero: numero
+            }
+
+        })
+        const respCliente = await cliente.findOne({
+            where: {
+                id: respTarjeta.cliente_id
+            }
+        })
+        return console.log(respTarjeta, '//////', respCliente);
+
+    } catch (error) {
+
+    }
+
+
     if (req.body.transaccion_tipo == "PAG")
         res.json({ "element": respPago, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
     else
