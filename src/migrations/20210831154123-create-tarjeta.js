@@ -36,7 +36,8 @@ module.exports = {
         }
       },
       saldo: {
-        type: Sequelize.DOUBLE
+        type: Sequelize.DOUBLE,
+        defaultValue: 0.0
       },
       createdAt: {
         allowNull: false,

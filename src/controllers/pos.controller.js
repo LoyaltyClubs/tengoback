@@ -1,30 +1,137 @@
-const { Op } = require("sequelize");
-
 const tarjeta = require('../models').Tarjeta
 
-const posController = { }
+const posController = {}
 
-posController.leerTarjeta = (req, res) => {
+posController.leerTarjeta = async (req, res) => {
     var dato = req.body.dato;
-    let datos = dato;
-    const resp = {
-        "element":
-        {
-            "esValida": "SI",
-            "tipoTarjeta": datos[0].includes("Tarjeta") ? "Innominada" : "Nominada",
-            "cedula": null,
-            "version": null,
-            "nrotarjeta": datos[2].substring(0, datos[2].length - 1),
-            "mesanioexpiracion": datos[1].substring(datos[1].length - 8, datos[1].length - 4)
-        },
-        "errors": [],
-        "messages": [],
-        "hasErrors": false,
-        "hasMessages": false,
+    const tipoTarjeta = {}
+    const { nominada = 1, innominada = 2 } = tipoTarjeta
+    //funcion para respuesta de error
+    let msg
+    const msgError = (msg, statusCode = 401) => {
+        res.status(statusCode).json({
+            message: msg
+        })
     }
-    res.json(resp)
+    let modeloResp = {}
+    const objRespuesta = (esValida, tipo_tarjeta, cedula, version, nrotarjeta, expiracion, error, msg) => {
+        modeloResp = {
+            element:
+            {
+                esValida: esValida,
+                tipoTarjeta: tipo_tarjeta,
+                cedula: cedula,
+                version: version,
+                nrotarjeta: nrotarjeta,
+                mesanioexpiracion: expiracion
+            },
+            errors: [error],
+            messages: [msg],
+            hasErrors: false,
+            hasMessages: false,
+        }
+    }
+    try {
+        ////////
+        const respId = await tarjeta.findAll({
+            where: {
+                numero: dato
+            }
+        })
+        ///////
+        const resp = await tarjeta.findOne({
+            where: {
+                numero: dato,
+                estado: 'vigente'
+            }
+        })
+        //////////
 
-
+        //validar que el id exista
+        if (respId.length == 0) {
+            msg = 'Numero de tarjeta incorrecto'
+            objRespuesta(
+                null,
+                null,
+                null,
+                null,
+                null,
+                '',
+                msg
+            )
+            return res.status(400).json({ modeloResp })
+        }
+        if (resp !== null) {
+            //validar el estado de la tarjeta
+            let fecha = resp.fecha_vencimiento.toString().split(" ")
+            if (resp.estado == "vigente" && resp.tipo_id == nominada) {
+                resp.tipo_id = {
+                    tipo: 'nominada',
+                    id: resp.tipo_id
+                }
+                objRespuesta(
+                    'si',
+                    resp.tipo_id,
+                    resp.cliente_id,
+                    null,
+                    resp.numero,
+                    `${fecha[1]}-${fecha[3]}`,
+                    null,
+                    null
+                )
+                console.log(resp.tipo_id);
+                return res.status(200).json({ modeloResp })
+            }
+            if (resp.estado == "vigente" && resp.tipo_id == innominada) {
+                console.log('innominada');
+                resp.tipo_id = {
+                    tipo: 'innominada',
+                    id: resp.tipo_id
+                }
+                resp.cliente_id = ''
+                objRespuesta(
+                    'si',
+                    resp.tipo_tarjeta,
+                    resp.cliente_id,
+                    null,
+                    resp.numero,
+                    `${fecha[1]}-${fecha[3]}`,
+                    null,
+                    null
+                )
+                return res.status(200).json({ modeloResp })
+            }
+        }
+        else {
+            msg = 'La tarjeta ya no esta vigente'
+            objRespuesta(
+                'no',
+                null,
+                null,
+                null,
+                null,
+                null,
+                '',
+                msg
+            )
+            return res.status(400).json({ modeloResp })
+        }
+    }
+    catch (error) {
+        console.log(error.message);
+        console.log(error);
+        // msgError(error, 500)
+        objRespuesta(
+            null,
+            null,
+            null,
+            null,
+            null,
+            error,
+            error.message
+        )
+        return res.status(500).json({ modeloResp })
+    }
 }
 
 posController.finaciamiento = (req, res) => {
@@ -102,51 +209,37 @@ posController.finaciamiento = (req, res) => {
 
 posController.validarTarjeta = async (req, res) => {
     const { id } = req.params;
-    const tipoTarjeta = { }
-    const { nominada = 1, innominada = 2 } = tipoTarjeta
-    //funcion para respuesta de error
-    let msg
-    const msgError = (msg, statusCode = 401) => {
-        res.status(statusCode).json({
-            message: msg
-        })
+    let tarjetaValida = {}
+    const respTarjetaValida = (existe, fecha) => {
+        tarjetaValida = {
+            dtFechaActiva: fecha,
+            existe: existe
+        }
     }
+
     try {
-        const respId = await tarjeta.findAll({
-            where: {
-                id: id
-            }
-        })
         const resp = await tarjeta.findOne({
             where: {
                 id: id,
                 estado: 'vigente'
             }
         })
-        // console.log(resp, 'respuesta');
-        //validar que el id exista
-        if (respId.length == 0) {
-            console.log('aqui');
-            msg = 'Inserte un codigo de tarjeta valido'
-            return msgError(msg)
-        }
-        //validar el estado de la tarjeta
-        if (resp.estado == "vigente" && resp.tipo_id == nominada) {
-            console.log('esta aqui');
-            return res.status(200).json({ resp })
-        }
-        if (resp.estado == "vigente" && resp.tipo_id == innominada) {
-            resp.tipo_id = 'innominada'
-            resp.cliente_id = ''
-            return res.status(200).json({ resp })
+        if (resp !== null) {
+
+            if (resp.estado == 'vigente') {
+                respTarjetaValida(true, resp.fecha_vencimiento)
+                res.status(200).json({ tarjetaValida })
+            }
         }
         else {
-            return console.log('algo va mal');
+            respTarjetaValida(false, '')
+            res.status(400).json({ tarjetaValida })
+
         }
-    }
-    catch (error) {
-        msg = 'La tarjeta ya no esta vigente'
-        return msgError(msg, 500)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error })
+
     }
 }
 
