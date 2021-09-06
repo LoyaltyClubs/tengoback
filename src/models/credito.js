@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     estado: DataTypes.STRING,
     nro_cuotas: DataTypes.INTEGER,
     monto_financiado: DataTypes.DECIMAL,
-    deleted: DataTypes.BOOLEAN
+    deleted: DataTypes.BOOLEAN,
+    cliente_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Credito',

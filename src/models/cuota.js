@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     monto: DataTypes.DECIMAL,
     fecha_limite: DataTypes.DATE,
     estado: DataTypes.STRING,
+    credito_id: DataTypes.INTEGER,
     deleted: DataTypes.BOOLEAN
   }, {
     sequelize,
