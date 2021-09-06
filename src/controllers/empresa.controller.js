@@ -65,7 +65,8 @@ empresaController.eliminar = (req, res) => {
     const { id } = req.params;
     return empresa.update(
         {
-        deleted: true
+        deleted: true,
+        updatedAt: new Date()
         },
         {
             where: {

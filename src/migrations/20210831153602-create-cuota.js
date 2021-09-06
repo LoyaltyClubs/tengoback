@@ -23,6 +23,13 @@ module.exports = {
       estado: {
         type: Sequelize.STRING
       },
+      credito_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Creditos',
+          key: 'id'
+        } 
+      },
       deleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false

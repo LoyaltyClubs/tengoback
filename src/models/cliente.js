@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     apellido_paterno: DataTypes.STRING,
     apellido_materno: DataTypes.STRING,
     estado_civil: DataTypes.STRING,
-    fecha_nacimineto: DataTypes.DATE,
+    fecha_nacimiento: DataTypes.DATE,
     sexo: DataTypes.STRING,
     ci: DataTypes.INTEGER,
     calle_particular: DataTypes.STRING,

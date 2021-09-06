@@ -11,6 +11,14 @@ clienteController.get = (req, res) => {
         .catch(error => res.status(400).send(error));
 }
 
+clienteController.getByCI = (req, res) => {
+    return cliente.findAll(
+        { where: { ci: req.params.ci } }
+    ).
+        then(cliente => res.status(200).send(cliente))
+        .catch(error => res.status(400).send(error));
+}
+
 clienteController.create = async (req, res) => {
     console.log(req.body);
     return await cliente.create({

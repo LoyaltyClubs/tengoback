@@ -8,6 +8,12 @@ creditoController.get = (req, res) => {
         .catch(error => res.status(400).send(error));
 }
 
+creditoController.getByCliente = (req, res) => {
+    return credito.findAll({ where: { id: req.params.id, deleted: false } }).
+        then(credito => res.status(200).send(credito))
+        .catch(error => res.status(400).send(error));
+}
+
 creditoController.create = (req, res) => {
     return credito.create({
         descripcion: req.body.descripcion,

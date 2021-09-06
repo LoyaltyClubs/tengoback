@@ -23,6 +23,14 @@ module.exports = {
       monto_financiado: {
         type: Sequelize.DECIMAL
       },
+      cliente_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'cliente',
+          key: 'id'
+        }
+
+      },
       deleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false

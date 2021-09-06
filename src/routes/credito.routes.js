@@ -5,6 +5,8 @@ const creditoController = require('../controllers/credito.controller')
 
 routerCredito.get('/', creditoController.get);
 
+routerCredito.get('/:id', creditoController.getByCliente);
+
 routerCredito.post('/create', creditoController.create);
 
 routerCredito.put('/update/:id', creditoController.actualizar);

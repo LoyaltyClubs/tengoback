@@ -37,7 +37,8 @@ rubroController.eliminar = (req, res) => {
     const { id } = req.params;
     return rubro.update(
         {
-        deleted: true
+        deleted: true,
+        updatedAt: new Date()
         },
         {
             where: {
