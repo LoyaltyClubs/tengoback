@@ -5,6 +5,34 @@ const posController = {}
 
 posController.leerTarjeta = async (req, res) => {
     var dato = req.body.dato;
+    var esValida = "SI";
+    let datos;
+    try {
+        datos = dato.split('ñ');
+    }catch (error){
+        esValida="NO";
+    }
+    var isNominada = datos[0].includes("TARJETA")?false:true;
+        const resp = {
+            "element": 
+                {
+                    "esValida": esValida,
+                    "tipoTarjeta":isNominada?"Nominada":"Innominada",
+                    "cedula":isNominada?datos[1].substring(9,18):null,
+                    "version":isNominada?datos[1].substring(datos[1].length-4,datos[1].length-1):null,
+                    "nrotarjeta":datos[2].substring(0,datos[2].length-1),
+                    "mesanioexpiracion":datos[1].substring(datos[1].length-8,datos[1].length-4)
+                },
+            "errors":[],
+            "messages":[],
+            "hasErrors":false,
+            "hasMessages":false,
+        }
+    res.json(resp);
+}
+
+/*posController.leerTarjeta = async (req, res) => {
+    var dato = req.body.dato;
     const tipoTarjeta = {}
     const { nominada = 1, innominada = 2 } = tipoTarjeta
     //funcion para respuesta de error
@@ -134,7 +162,7 @@ posController.leerTarjeta = async (req, res) => {
         )
         return res.status(500).json({ modeloResp })
     }
-}
+}*/
 
 posController.finaciamiento = async (req, res) => {
     const {
@@ -260,16 +288,15 @@ posController.validarTarjeta = async (req, res) => {
     try {
         const resp = await tarjeta.findOne({
             where: {
-                id: id,
-                estado: 'vigente'
+                numero: id,
+                estado: 'Vigente'
             }
         })
         if (resp !== null) {
-
-            if (resp.estado == 'vigente') {
+            //if (resp.estado == 'vigente') {
                 respTarjetaValida(true, resp.fecha_vencimiento)
                 res.status(200).json({ tarjetaValida })
-            }
+            //}
         }
         else {
             respTarjetaValida(false, '')
