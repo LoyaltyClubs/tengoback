@@ -2,10 +2,10 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('Cliente', [{
+    await queryInterface.bulkInsert('Empresa', [{
       nombre: "Loyalty Clubs",
       razon_social: "Loyalty Clubs SA",
-      ni: "12345678",
+      nit: "12345678",
       rubro_id: 5,
       direccion: "Edificio Madero Oficina #6",
       ciudad_id: 5,
@@ -18,8 +18,7 @@ module.exports = {
       ci: "12345678",
       expedicion: "SC",
       telefono: "7777777",
-      plan_id: 5,
-      deleted: 0,
+      plan_id: 3,
       createdAt: new Date(),
       updatedAt: new Date()
     },
