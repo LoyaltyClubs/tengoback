@@ -147,12 +147,21 @@ posController.finaciamiento = async (req, res) => {
         transaccion_hora,
         vendedor_nro,
         transaccion_tipo,
+        mensaje_codigo,
+        rut_titular,
+        rut_adicional,
+        version_tarjeta,
+        producto_credito,
         monto_financiar,
-        cantidad_cuotas
+        cantidad_cuotas,
+        monto_total,
+        pie,
+        diferido,
+        descuento
     } = req.body
     // var total = parseFloat(req.body.monto_financiar) + req.body.monto_financiar * 0.02;
     // var cuota = total / req.body.cantidad_cuotas;
-    let modeloResp, modeloRespPago = {}
+    let modeloResp, modeloRespPago, errors = {}
     const objRespPago = (apellido_paterno, apellido_materno, nombres) => {
         modeloRespPago = {
             "comercio": comercio,//se recibe
@@ -188,7 +197,7 @@ posController.finaciamiento = async (req, res) => {
         }
     }
 
-    const objResp = (apellido_paterno, apellido_materno, nombres) => {
+    const objResp = (apellido_paterno, apellido_materno, nombres, ci) => {
         modeloResp = {
             "comercio": comercio,//se recibe
             "local": local,//se recibe
@@ -204,7 +213,7 @@ posController.finaciamiento = async (req, res) => {
             "apellido_materno": apellido_materno,
             "nombres": nombres,
             "monto_financiar": parseFloat(monto_financiar),//se recibe
-            "total_credito": total,
+            "total_credito": 'total',
             "tasa_interes": 2,
             "tasa_impuesto_timbre": 2,
             "monto_retencion": 0.00,
@@ -212,39 +221,73 @@ posController.finaciamiento = async (req, res) => {
             "codigo_autorizacion": "000000000012",
             "cantidad_cuotas": cantidad_cuotas,//se recibe
             "fecha_primer_vencimiento": "20210809",
-            "valor_cuota": cuota,//se calcula
+            "valor_cuota": 'cuota',//se calcula
             "gasto_evaluacion_cuota": 0.0,
-            "total_pagar_mensual": cuota,//se calcula
+            "total_pagar_mensual": 'cuota',//se calcula
             "numero_tarjeta": numero_tarjeta,//se recibe
             "mensaje_usuario": "Ninguno",
-            "carnet": "7842022"
+            "carnet": ci
         }
 
+    }
+    const modeloError = (error, message) => {
+        errors = {
+            "errors": [error],
+            "messages": [message],
+            "hasError": false,
+            "hasMessages": false
+        }
     }
 
     try {
         const respTarjeta = await tarjeta.findOne({
             where: {
-                numero: numero
+                numero: numero_tarjeta
             }
 
         })
-        const respCliente = await cliente.findOne({
-            where: {
-                id: respTarjeta.cliente_id
-            }
-        })
-        return console.log(respTarjeta, '//////', respCliente);
+        console.log(respTarjeta);
+        if (respTarjeta != null) {
+            const respCliente = await cliente.findOne({
+                where: {
+                    id: respTarjeta.cliente_id
+                }
+            })
+            objResp(respCliente.apellido_paterno, respCliente.apellido_materno, respCliente.nombre, respCliente.ci)
+            objRespPago(respCliente.apellido_paterno, respCliente.apellido_materno, respCliente.nombre)
+            if (req.body.transaccion_tipo == "PAG")
+                return res.status(200).json({
+                    "element": modeloRespPago,
+                    errors
+                });
+            else
+                return res.status(200).json({
+                    "element": modeloResp,
+                    errors
+                });
+        }
+        else {
+            modeloError(true, 'El numero de tarjeta es incorrecto')
+            return res.status(400).json({
+                "element": '',
+                errors
+            });
+
+        }
+
+
 
     } catch (error) {
+        modeloError(error, error.message)
+        console.log(error);
+        return res.status(500).json({
+            "element": null,
+            errors
+        });
 
     }
 
 
-    if (req.body.transaccion_tipo == "PAG")
-        res.json({ "element": respPago, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
-    else
-        res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
 }
 
 posController.validarTarjeta = async (req, res) => {
@@ -314,7 +357,7 @@ posController.pagoCuota = (req, res) => {
         "codigo_autorizacion": "000000000012",
         "monto_afecto_pagado": req.body.monto_abonado
     }
-    res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
+    return res.status(200).json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
 }
 
 posController.confirmacionFinanciamiento = (req, res) => {
