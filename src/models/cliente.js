@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     provincia_referencia: DataTypes.STRING,
     telefono_referencia: DataTypes.STRING,
     tipo_tel_referencia: DataTypes.STRING,
+    parentesco_referencia: DataTypes.STRING,
     ciudad_referencia: DataTypes.STRING,
     dia_pago: DataTypes.INTEGER,
     linea_credito: DataTypes.DECIMAL,

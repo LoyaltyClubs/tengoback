@@ -15,10 +15,13 @@ module.exports = (sequelize, DataTypes) => {
   };
   Credito.init({
     descripcion: DataTypes.STRING,
+    secuencia: DataTypes.STRING,
     fecha: DataTypes.DATE,
     estado: DataTypes.STRING,
+    monto_capital: DataTypes.STRING,
     nro_cuotas: DataTypes.INTEGER,
     monto_financiado: DataTypes.DECIMAL,
+    fecha_primer_cuota: DataTypes.DATE,
     deleted: DataTypes.BOOLEAN,
     cliente_id: DataTypes.INTEGER
   }, {

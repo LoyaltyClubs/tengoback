@@ -70,6 +70,9 @@ module.exports = {
       tipo_tel_referencia: {
         type: Sequelize.STRING
       },
+      parentesco_referencia: {
+        type: Sequelize.STRING,
+      },
       ciudad_referencia: {
         type: Sequelize.STRING
       },

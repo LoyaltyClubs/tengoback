@@ -82,6 +82,7 @@ clienteController.update = (req, res) => {
             provincia_referencia: req.body.provincia_referencia,
             telefono_referencia: req.body.telefono_referencia,
             tipo_tel_referencia: req.body.tipo_tel_referencia,
+            parentesco_referencia: req.body.parentesco_referencia,
             ciudad_referencia: req.body.ciudad_referencia,
             dia_pago: req.body.dia_pago,
             linea_credito: req.body.linea_credito,
@@ -110,5 +111,25 @@ clienteController.delete = (req, res) => {
         }).then(cliente => res.status(200).send(cliente))
         .catch(error => res.status(400).send(error));
 }
+
+clienteController.bloquear = (req, res) => {
+    const { id } = req.params;
+    cli = await cliente.findOne({where: {
+        id = id
+    }});
+    var estado = cli.estado=="BLOQUEADO"?"ACTIVO":"BLOQUEADO";
+    
+    return cliente.update(
+        {
+            estado: estado
+        },
+        {
+            where: {
+                id: id
+            }
+        }).then(cliente => res.status(200).send(cliente))
+        .catch(error => res.status(400).send(error));
+}
+
 
 module.exports = clienteController

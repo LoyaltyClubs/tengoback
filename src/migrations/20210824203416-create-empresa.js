@@ -39,7 +39,7 @@ module.exports = {
         }
       },
       fecha_cierre: {
-        type: Sequelize.DATE,
+        type: Sequelize.INTEGER,
         allowNull: false
       },
       inicio_contrato: {

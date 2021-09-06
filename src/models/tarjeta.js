@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Tarjeta.init({
-    numero: DataTypes.INTEGER,
+    numero: DataTypes.STRING,
     fecha_vencimiento: DataTypes.DATE,
     estado: DataTypes.STRING,
     deleted: DataTypes.BOOLEAN,

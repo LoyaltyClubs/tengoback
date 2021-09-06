@@ -5,6 +5,8 @@ const cuotasController = require('../controllers/cuotas.controller')
 
 routerCuotas.get('/', cuotasController.get);
 
+routerCuotas.get('/:id', cuotasController.getCuotasByCredito);
+
 routerCuotas.post('/create', cuotasController.create);
 
 routerCuotas.put('/update/:id', cuotasController.actualizar);

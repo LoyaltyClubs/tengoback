@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     rubro_id: DataTypes.INTEGER,
     direccion: DataTypes.STRING,
     ciudad_id: DataTypes.INTEGER,
-    fecha_cierre: DataTypes.DATE,
+    fecha_cierre: DataTypes.INTEGER,
     inicio_contrato: DataTypes.DATE,
     fin_contrato: DataTypes.DATE,
     representante_legal: DataTypes.STRING,

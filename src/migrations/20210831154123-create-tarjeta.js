@@ -9,10 +9,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       numero: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       fecha_vencimiento: {
-        type: Sequelize.DATE
+        type: Sequelize.STRING
       },
       estado: {
         type: Sequelize.STRING
