@@ -17,7 +17,7 @@ module.exports = {
       ci: "12345678",
       expedicion: "SC",
       telefono: "7777777",
-      //plan_id: 3,
+      plan_id: 5,
       createdAt: new Date(),
       updatedAt: new Date()
     },

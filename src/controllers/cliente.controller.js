@@ -112,11 +112,10 @@ clienteController.delete = (req, res) => {
         .catch(error => res.status(400).send(error));
 }
 
-clienteController.bloquear = (req, res) => {
+clienteController.bloquear = async (req, res) => {
     const { id } = req.params;
-    cli = await cliente.findOne({where: {
-        id = id
-    }});
+    cli = await cliente.finOne(
+        { where: { id: id } });
     var estado = cli.estado=="BLOQUEADO"?"ACTIVO":"BLOQUEADO";
     
     return cliente.update(
