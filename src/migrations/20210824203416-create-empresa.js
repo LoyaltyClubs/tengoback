@@ -22,6 +22,7 @@ module.exports = {
       },
       rubro_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'rubro',
           key: 'id'
@@ -83,7 +84,7 @@ module.exports = {
         }
       },
       deleted: {
-        type:Sequelize.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false
       },

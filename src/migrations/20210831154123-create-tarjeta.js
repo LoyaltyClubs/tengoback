@@ -26,14 +26,19 @@ module.exports = {
         references: {
           model: 'Cliente',
           key: 'id'
-        }  
+        }
       },
       tipo_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Tipo_tarjeta',
           key: 'id'
         }
+      },
+      saldo: {
+        type: Sequelize.DOUBLE,
+        defaultValue: 0.0
       },
       createdAt: {
         allowNull: false,

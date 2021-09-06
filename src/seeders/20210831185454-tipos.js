@@ -2,16 +2,23 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    
+
     //Add seed commands here.
-  
+
     //Example:
-    await queryInterface.bulkInsert('Tipo_tarjeta', [{
-      nombre: 'Fisica',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }], {});
-  
+    await queryInterface.bulkInsert('Tipo_tarjeta', [
+      {
+        nombre: 'Nominada',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        nombre: 'innominada',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+    ], { });
+
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -19,7 +26,7 @@ module.exports = {
      * Add commands to revert seed here.
      *
      *///Example:
-      await queryInterface.bulkDelete('Tipo_tarjeta', null, {});
-     
+    await queryInterface.bulkDelete('Tipo_tarjeta', null, { });
+
   }
 };

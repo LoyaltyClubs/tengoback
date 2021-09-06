@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     estado: DataTypes.STRING,
     deleted: DataTypes.BOOLEAN,
     cliente_id: DataTypes.INTEGER,
+    saldo: DataTypes.DOUBLE,
     tipo_id: DataTypes.INTEGER
   }, {
     sequelize,
