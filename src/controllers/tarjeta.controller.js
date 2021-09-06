@@ -8,6 +8,12 @@ TarjetaController.get = (req, res) => {
         .catch(error => res.status(400).send(error));
 }
 
+TarjetaController.getByClient = (req, res) => {
+    return tarjeta.findAll({ where: { cliente_id: req.params.cliente_id, deleted: false } }).
+        then(tarjeta => res.status(200).send(tarjeta))
+        .catch(error => res.status(400).send(error));
+}
+
 TarjetaController.create = (req, res) => {
     return tarjeta.create({
         numero: req.body.numero,

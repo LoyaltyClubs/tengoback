@@ -42,7 +42,8 @@ planController.eliminar = (req, res) => {
     const { id } = req.params;
     return plan.update(
         {
-        deleted: true
+        deleted: true,
+        updatedAt: new Date()
         },
         {
             where: {
