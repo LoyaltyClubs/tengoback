@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Ciudad, {
         foreignKey: 'ciudad_id'
       });
+      this.hasMany(models.Tarjeta, {
+        foreignKey: 'cliente_id'
+      });
+      this.belongsTo(models.Empresa, {
+        foreignKey: 'empresa_id'
+      });
     }
   };
   Cliente.init({
@@ -44,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     dia_pago: DataTypes.INTEGER,
     linea_credito: DataTypes.DECIMAL,
     estado: DataTypes.STRING,
+    empresa_id: DataTypes.INTEGER,
     deleted: DataTypes.BOOLEAN
   }, {
     freezeTableName: true,

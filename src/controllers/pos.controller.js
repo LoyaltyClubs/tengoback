@@ -1,5 +1,6 @@
 const tarjeta = require('../models').Tarjeta
 const cliente = require('../models').Cliente
+const empresa = require('../models').Empresa
 
 const posController = {}
 
@@ -276,10 +277,40 @@ posController.leerTarjeta = async (req, res) => {
         res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
 }*/
 
-posController.finaciamiento = (req, res) => {
+posController.finaciamiento = async (req, res) => {
+    const {
+        numero_tarjeta,
+        comercio,
+        local,
+        caja,
+        transaccion_nro,
+        transaccion_fecha,
+        transaccion_hora,
+        vendedor_nro,
+        transaccion_tipo,
+        mensaje_codigo,
+        rut_titular,
+        rut_adicional,
+        version_tarjeta,
+        producto_credito,
+        monto_financia,
+        cantidad_cuotas,
+        monto_total,
+        pie,
+        diferido,
+        descuento
+    } = req.body
+    var mensaje;
+
+    const datosCliente = await tarjeta.findOne({where: {numero: numero_tarjeta, deleted: false}, include: ['Cliente']});
+    const planCliente = await empresa.findOne({where: {cliente_id: datosCliente.Cliente.id, deleted: false}, include: ['Plan']});
+    mensaje=datosCliente==null?"Tarjeta Innomidada no es de un cliente":"";
+    console.log(planCliente.Plan.nombre);
+    console.log(mensaje);
+
     var total = parseFloat(req.body.monto_financia)+req.body.monto_financia*0.02;
     var cuota = total/req.body.cantidad_cuotas;
-    var numero_tarjeta = req.body.numero_tarjeta;
+    //var numero_tarjeta = req.body.numero_tarjeta;
 
     // Segun el numero la tarjeta buscar al cliente, si no es cliente devolver, no es de un cliente
 
@@ -326,11 +357,11 @@ posController.finaciamiento = (req, res) => {
         "vendedor_nro":req.body.vendedor_nro,//se recibe
         "transaccion_tipo":req.body.transaccion_tipo,//se recibe
         "codigo_mensaje":req.body.mensaje_codigo,
-        "mensaje":"Proceso realizado correctamente",
-        "apellido_paterno":"arroyo",
-        "apellido_materno":"cuellar",
-        "nombres":"ashley erwin joel",    
-        "monto_financiar":parseFloat(req.body.monto_financiar),//se recibe
+        "mensaje":mensaje,
+        "apellido_paterno":datosCliente.Cliente.apellido_paterno,
+        "apellido_materno":datosCliente.Cliente.apellido_materno,
+        "nombres":datosCliente.Cliente.nombre,    
+        "monto_financia":parseFloat(req.body.monto_financia),//se recibe
         "total_credito":total,
         "tasa_interes":2,
         "tasa_impuesto_timbre":2,

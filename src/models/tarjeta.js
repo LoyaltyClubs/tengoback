@@ -14,11 +14,14 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Tipo_tarjeta,{
          foreignKey:'tipo_id'
       })
+      this.belongsTo(models.Cliente,{
+        foreignKey: 'cliente_id'
+      });
     }
   };
   Tarjeta.init({
     numero: DataTypes.STRING,
-    fecha_vencimiento: DataTypes.DATE,
+    fecha_vencimiento: DataTypes.STRING,
     estado: DataTypes.STRING,
     deleted: DataTypes.BOOLEAN,
     cliente_id: DataTypes.INTEGER,

@@ -85,6 +85,13 @@ module.exports = {
       estado: {
         type: Sequelize.STRING
       },
+      empresa_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Empresa',
+          key: 'id'
+        }
+      },
       deleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false

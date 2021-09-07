@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Plan,{
         foreignKey: 'plan_id'
       });
+      this.hasMany(models.Cliente, {
+        foreignKey: 'empresa_id'
+      });
     }
   };
   Empresa.init({
