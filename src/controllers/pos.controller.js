@@ -327,7 +327,6 @@ posController.validarTarjeta = async (req, res) => {
             existe: existe
         }
     }
-
     try {
         const resp = await tarjeta.findOne({
             where: {

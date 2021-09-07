@@ -14,14 +14,10 @@ cargar.cargarExcel = async (req = request, res = response) => {
     const { archivo } = req.files
     try {
         const nombre = await subirArchivo(archivo, ['xlsx'], '');
-        console.log(nombre);
-
-        const worbook = XLSX.readFile(`uploads/${nombre}`);
+        const worbook = XLSX.readFile(`src/uploads/${nombre}`);
         const worbookSheets = worbook.SheetNames;
         const dataExcel = XLSX.utils.sheet_to_json(worbook.Sheets[worbookSheets[0]]);
-        console.log(dataExcel);
         let carnets = [];
-
         await dataExcel.forEach(dato => { // sacar todos los carnets del archivo excel
             carnets.push(dato.ci)
         })
@@ -37,7 +33,6 @@ cargar.cargarExcel = async (req = request, res = response) => {
         await respuesta.forEach(customer => {
             carnetsEncontrados.push(customer.ci);
         })
-
         const carnetsSinRegistrar = await carnets.filter(carnet => { //carnets que no estan registrdor en la bd
             return !carnetsEncontrados.includes(carnet.toString())
         })
