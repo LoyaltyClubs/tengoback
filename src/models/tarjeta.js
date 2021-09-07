@@ -11,10 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // this.belongsTo(models.Tipo_tarjeta,{
-      //   as:'tipo_id',
-      //   foreignKey:'tipo_id'
-      // })
+      this.belongsTo(models.Tipo_tarjeta,{
+         foreignKey:'tipo_id'
+      })
     }
   };
   Tarjeta.init({

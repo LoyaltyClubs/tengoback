@@ -439,7 +439,23 @@ posController.confirmacionFinanciamiento = (req, res) => {
         "transaccion_tipo":req.body.transaccion_tipo,//se recibe
         "codigo_mensaje":req.body.mensaje_codigo,
         "codigo_respuesta":"0000",
-        "bolet_nro":"   "
+        "boleta_nro":"   "
+    }
+    res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false })
+}
+posController.confirmacionPago = (req, res) => {
+    const resp = {
+        "comercio":req.body.comercio,//se recibe
+        "local":req.body.local,//se recibe
+        "caja":req.body.caja,//se recibe,
+        "transaccion_nro":req.body.transaccion_nro,
+        "transaccion_fecha":req.body.transaccion_fecha,
+        "transaccion_hora":req.body.transaccion_hora,
+        "vendedor_nro":req.body.vendedor_nro,//se recibe
+        "transaccion_tipo":req.body.transaccion_tipo,//se recibe
+        "codigo_mensaje":req.body.mensaje_codigo,
+        "codigo_respuesta":"0000",
+        "boleta_nro":"   "
     }
     res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false })
 }

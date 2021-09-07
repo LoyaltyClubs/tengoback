@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Ciudad extends Model {
+  class Provincia extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,25 +11,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.Provincia,{
-        foreignKey: 'ciudad_id'
-      });
-      this.hasMany(models.Empresa, {
-        foreignKey: 'ciudad_id'
-      });
-      this.hasMany(models.Cliente, {
+      this.belongsTo(models.Ciudad, {
         foreignKey: 'ciudad_id'
       });
     }
   };
-  Ciudad.init({
+  Provincia.init({
     nombre: DataTypes.STRING,
     estado: DataTypes.BOOLEAN,
+    ciudad_id: DataTypes.INTEGER,
     deleted: DataTypes.BOOLEAN
   }, {
     freezeTableName: true,
     sequelize,
-    modelName: 'Ciudad',
+    modelName: 'Provincia',
   });
-  return Ciudad;
+  return Provincia;
 };
