@@ -17,7 +17,7 @@ module.exports = {
         fecha_vencimiento: '05/25',
         estado: 'Vigente',
         cliente_id: 5,
-        tipo_id: 10,
+        tipo_id: 15,
         saldo: 2000,
         createdAt: new Date(),
         updatedAt: new Date()
