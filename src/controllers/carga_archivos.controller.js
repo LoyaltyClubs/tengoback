@@ -60,16 +60,9 @@ cargar.cargarExcel = async (req = request, res = response) => {
         console.log(error);
         res.status(400).json({
             error,
-            msg: "error al cargar clientes"
+            msg: error.message
         })
     }
-}
-cargar.prueba = async (req = request, res = response) => {
-    const { prueba = 'nada' } = req.body
-    res.json({
-        ok: true,
-        prueba
-    })
 }
 
 module.exports = cargar
