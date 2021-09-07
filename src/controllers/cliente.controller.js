@@ -1,11 +1,11 @@
 const cliente = require('../models').Cliente
 
-const clienteController = { }
+const clienteController = {}
 
 
 clienteController.get = (req, res) => {
     return cliente.findAll(
-        { where: { deleted: false } }
+        // { where: { deleted: false } }
     ).
         then(cliente => res.status(200).send(cliente))
         .catch(error => res.status(400).send(error));

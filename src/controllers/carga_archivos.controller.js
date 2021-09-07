@@ -1,4 +1,12 @@
-const cargarExcel = async (req, res) => {
+const cliente = require('../models').Cliente
+const { request, response } = require('express')
+const { subirArchivo } = require('./uploads.controller')
+const XLSX = require('xlsx')
+
+
+const cargar = {}
+
+cargar.cargarExcel = async (req = request, res = response) => {
     if (!req.files || Object.keys(req.files).length === 0 || !req.files.archivo) {
         res.status(400).json({ msg: 'No hay archivos para subir' });
         return;
@@ -6,18 +14,19 @@ const cargarExcel = async (req, res) => {
     const { archivo } = req.files
     try {
         const nombre = await subirArchivo(archivo, ['xlsx'], '');
+        console.log(nombre);
 
         const worbook = XLSX.readFile(`uploads/${nombre}`);
         const worbookSheets = worbook.SheetNames;
         const dataExcel = XLSX.utils.sheet_to_json(worbook.Sheets[worbookSheets[0]]);
-
+        console.log(dataExcel);
         let carnets = [];
 
         await dataExcel.forEach(dato => { // sacar todos los carnets del archivo excel
             carnets.push(dato.ci)
         })
 
-        const respuesta = await Customer.findAll({
+        const respuesta = await cliente.findAll({
             where: {
                 ci: carnets
             }
@@ -33,26 +42,34 @@ const cargarExcel = async (req, res) => {
             return !carnetsEncontrados.includes(carnet.toString())
         })
 
-        const customers = await dataExcel.filter(dato => {
+        const clientes = await dataExcel.filter(dato => {
             return carnetsSinRegistrar.includes(dato.ci)
         })
 
-        await Customer.bulkCreate(customers)
+        await cliente.bulkCreate(clientes)
         res.status(201).json({
             ok: true,
             msg: "Clientes creados correctamente",
-            regAgregados: customers.length,
+            regAgregados: clientes.length,
             regExistentes: respuesta.length,
             dataExcel
 
         })
 
     } catch (error) {
+        console.log(error);
         res.status(400).json({
             error,
             msg: "error al cargar clientes"
         })
     }
 }
+cargar.prueba = async (req = request, res = response) => {
+    const { prueba = 'nada' } = req.body
+    res.json({
+        ok: true,
+        prueba
+    })
+}
 
-module.exports = cargarExcel
+module.exports = cargar

@@ -1,10 +1,10 @@
 const { Router } = require('express')
 const routerCargar_exel = Router()
 
-const cargar_exelController = require('../controllers/carga_archivos.controller')
+const cargar = require('../controllers/carga_archivos.controller')
 
-routerCiudad.post('/uploads', cargar_exelController.cargarExcel);
+routerCargar_exel.post('/uploads', cargar.cargarExcel);
 
-r
 
-module.exports = routerCiudad
+
+module.exports = routerCargar_exel

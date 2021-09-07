@@ -1,15 +1,24 @@
 const express = require('express')
 const morgan = require('morgan')
+const fileUpload = require('express-fileupload');
+
 
 const app = express()
 const cors = require("cors");
 
 app.set('port', process.env.PORT || 8000);
 
-app.use(morgan('dev'));
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/',
+    createParentPath: true
+}));
+
+app.use('/uploads', express.static('./uploads'))
 
 app.use("/api/pos", require("./routes/pos.routes"))
 app.use("/api/ciudad", require("./routes/ciudad.routes"))
@@ -21,6 +30,6 @@ app.use("/api/credito", require("./routes/credito.routes"))
 app.use("/api/cuotas", require("./routes/cuotas.routes"))
 app.use("/api/tipo_tarjeta", require("./routes/tipo_tarjeta.routes"))
 app.use("/api/tarjeta", require("./routes/tarjeta.routes"))
-app.use("/api/cargaArchivos", require("./routes/carga_archivos.routes"))
+app.use("/api/carga_archivos", require("./routes/carga_archivos.routes"))
 
 module.exports = app;

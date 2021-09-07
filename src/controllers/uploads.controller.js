@@ -10,6 +10,7 @@ const subirArchivo = (archivo, extensionesValidas = ['png', 'jpg', 'jpeg', 'gif'
         const extension = nombrecortado[nombrecortado.length - 1];
         // Valida la extendion
         if (!extensionesValidas.includes(extension)) {
+            console.log('entra aqui');
             return reject(`la extension ${extension} no es permitida, ${extensionesValidas}`)
         }
         const nombreTemp = `${uuidv4()}.${extension}`;
