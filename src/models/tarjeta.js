@@ -11,15 +11,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // this.belongsTo(models.Tipo_tarjeta,{
-      //   as:'tipo_id',
-      //   foreignKey:'tipo_id'
-      // })
+      this.belongsTo(models.Tipo_tarjeta,{
+         foreignKey:'tipo_id'
+      })
+      this.belongsTo(models.Cliente,{
+        foreignKey: 'cliente_id'
+      });
     }
   };
   Tarjeta.init({
-    numero: DataTypes.INTEGER,
-    fecha_vencimiento: DataTypes.DATE,
+    numero: DataTypes.STRING,
+    fecha_vencimiento: DataTypes.STRING,
     estado: DataTypes.STRING,
     deleted: DataTypes.BOOLEAN,
     cliente_id: DataTypes.INTEGER,

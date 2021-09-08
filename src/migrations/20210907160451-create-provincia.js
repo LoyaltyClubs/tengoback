@@ -1,44 +1,28 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Tarjeta', {
+    await queryInterface.createTable('Provincia', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      numero: {
-        type: Sequelize.STRING
-      },
-      fecha_vencimiento: {
+      nombre: {
         type: Sequelize.STRING
       },
       estado: {
-        type: Sequelize.STRING
+        type: Sequelize.BOOLEAN
+      },
+      ciudad_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Ciudad',
+          key: 'id'
+        }
       },
       deleted: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      cliente_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Cliente',
-          key: 'id'
-        }
-      },
-      tipo_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'Tipo_tarjeta',
-          key: 'id'
-        }
-      },
-      saldo: {
-        type: Sequelize.DOUBLE,
-        defaultValue: 0.0
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
@@ -51,6 +35,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Tarjeta');
+    await queryInterface.dropTable('Provincia');
   }
 };

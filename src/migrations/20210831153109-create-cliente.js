@@ -70,6 +70,9 @@ module.exports = {
       tipo_tel_referencia: {
         type: Sequelize.STRING
       },
+      parentesco_referencia: {
+        type: Sequelize.STRING,
+      },
       ciudad_referencia: {
         type: Sequelize.STRING
       },
@@ -81,6 +84,13 @@ module.exports = {
       },
       estado: {
         type: Sequelize.STRING
+      },
+      empresa_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Empresa',
+          key: 'id'
+        }
       },
       deleted: {
         type: Sequelize.BOOLEAN,

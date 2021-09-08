@@ -1,9 +1,11 @@
+const provincia = require('../models/provincia');
+
 const ciudad = require('../models').Ciudad;
 
 const ciudadController = {}
 
 ciudadController.get = (req, res) => {
-    return ciudad.findAll({where: {deleted: false}}).
+    return ciudad.findAll({where: {deleted: false}, include:['Provincia']}).
     then(ciudad => res.status(200).send(ciudad))
     .catch(error => res.status(400).send(error));
 }

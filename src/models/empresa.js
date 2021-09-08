@@ -11,18 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      /*this.belongsTo(models.ciudad,{
-        as: 'ciudad',
+      this.belongsTo(models.Ciudad,{
         foreignKey: 'ciudad_id'
       });
-      this.belongsTo(models.rubro,{
-        as: 'rubro',
+      this.belongsTo(models.Rubro,{
         foreignKey: 'rubro_id'
       });
-      this.belongsTo(models.plan,{
-        as: 'plan',
+      this.belongsTo(models.Plan,{
         foreignKey: 'plan_id'
-      });*/
+      });
+      this.hasMany(models.Cliente, {
+        foreignKey: 'empresa_id'
+      });
     }
   };
   Empresa.init({
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     rubro_id: DataTypes.INTEGER,
     direccion: DataTypes.STRING,
     ciudad_id: DataTypes.INTEGER,
-    fecha_cierre: DataTypes.DATE,
+    fecha_cierre: DataTypes.INTEGER,
     inicio_contrato: DataTypes.DATE,
     fin_contrato: DataTypes.DATE,
     representante_legal: DataTypes.STRING,

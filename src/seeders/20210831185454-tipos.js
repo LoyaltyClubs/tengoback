@@ -13,7 +13,7 @@ module.exports = {
         updatedAt: new Date()
       },
       {
-        nombre: 'innominada',
+        nombre: 'Innominada',
         createdAt: new Date(),
         updatedAt: new Date()
       },

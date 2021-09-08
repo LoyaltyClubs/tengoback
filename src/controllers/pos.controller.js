@@ -1,5 +1,6 @@
 const tarjeta = require('../models').Tarjeta
 const cliente = require('../models').Cliente
+const empresa = require('../models').Empresa
 
 const posController = {}
 
@@ -164,7 +165,7 @@ posController.leerTarjeta = async (req, res) => {
     }
 }*/
 
-posController.finaciamiento = async (req, res) => {
+/*posController.finaciamiento = async (req, res) => {
     const {
         numero_tarjeta,
         comercio,
@@ -316,7 +317,118 @@ posController.finaciamiento = async (req, res) => {
     }
 
 
+    if (req.body.transaccion_tipo == "PAG")
+        res.json({ "element": respPago, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
+    else
+        res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
+}*/
+
+posController.finaciamiento = async (req, res) => {
+    const {
+        numero_tarjeta,
+        comercio,
+        local,
+        caja,
+        transaccion_nro,
+        transaccion_fecha,
+        transaccion_hora,
+        vendedor_nro,
+        transaccion_tipo,
+        mensaje_codigo,
+        rut_titular,
+        rut_adicional,
+        version_tarjeta,
+        producto_credito,
+        monto_financia,
+        cantidad_cuotas,
+        monto_total,
+        pie,
+        diferido,
+        descuento
+    } = req.body
+    var mensaje;
+
+    const datosCliente = await tarjeta.findOne({ where: { numero: numero_tarjeta, deleted: false }, include: ['Cliente'] });
+    const planCliente = await empresa.findOne({ where: { cliente_id: datosCliente.Cliente.id, deleted: false }, include: ['Plan'] });
+    mensaje = datosCliente == null ? "Tarjeta Innomidada no es de un cliente" : "";
+    console.log(planCliente.Plan.nombre);
+    console.log(mensaje);
+
+    var total = parseFloat(req.body.monto_financia) + req.body.monto_financia * 0.02;
+    var cuota = total / req.body.cantidad_cuotas;
+    //var numero_tarjeta = req.body.numero_tarjeta;
+
+    // Segun el numero la tarjeta buscar al cliente, si no es cliente devolver, no es de un cliente
+
+    const respPago = {
+        "comercio": req.body.comercio,//se recibe
+        "local": req.body.local,//se recibe
+        "caja": req.body.caja,//se recibe
+        "transaccion_nro": req.body.transaccion_nro,//se recibe
+        "transaccion_fecha": req.body.transaccion_fecha,//se recibe
+        "transaccion_hora": req.body.transaccion_hora,//se recibe
+        "vendedor_nro": req.body.vendedor_nro,//se recibe
+        "transaccion_tipo": req.body.transaccion_tipo,//se recibe
+        "mensaje_codigo": req.body.mensaje_codigo,//se recibe,
+        "mensaje": "Proceso realizado correctamente",
+        "apellido_paterno": "arroyo",
+        "apellido_materno": "cuellar",
+        "nombres": "ashley erwin joel",
+        "estado_cliente": "",
+        "morosidad": 0,
+        "permite_abono": 1,
+        "total_pagar": 42.22,
+        "monto_vencido": 0.0,
+        "monto_pago_anticipado": 0.0,
+        "permite_recuperado": 0,
+        "monto_deuda_castigada": 0.00,
+        "permite_pago_minimo": 0,
+        "pie_minimo_pago_minimo": 0.00,
+        "saldo_pago_minimo": 0.00,
+        "permite_repactacion": 0,
+        "deuda_total": 100.00,
+        "pie_minimo_repactacion": 0.00,
+        "descuento": 0.00,
+        "saldo_repactacion": 0.00,
+        "monto_afecto": 0.00
+    }
+
+    const resp = {
+        "comercio": req.body.comercio,//se recibe
+        "local": req.body.local,//se recibe
+        "caja": req.body.caja,//se recibe
+        "transaccion_nro": req.body.transaccion_nro,//se recibe
+        "transaccion_fecha": req.body.transaccion_fecha,//se recibe
+        "transaccion_hora": req.body.transaccion_hora,//se recibe
+        "vendedor_nro": req.body.vendedor_nro,//se recibe
+        "transaccion_tipo": req.body.transaccion_tipo,//se recibe
+        "codigo_mensaje": req.body.mensaje_codigo,
+        "mensaje": mensaje,
+        "apellido_paterno": datosCliente.Cliente.apellido_paterno,
+        "apellido_materno": datosCliente.Cliente.apellido_materno,
+        "nombres": datosCliente.Cliente.nombre,
+        "monto_financia": parseFloat(req.body.monto_financia),//se recibe
+        "total_credito": total,
+        "tasa_interes": 2,
+        "tasa_impuesto_timbre": 2,
+        "monto_retencion": 0.00,
+        "monto_comision": 0.00,
+        "codigo_autorizacion": "000000000012",
+        "cantidad_cuotas": req.body.cantidad_cuotas,//se recibe
+        "fecha_primer_vencimiento": "20210809",
+        "valor_cuota": cuota,//se calcula
+        "gasto_evaluacion": 0.0,
+        "total_pagar_mensual": cuota,//se calcula
+        "numero_tarjeta": req.body.numero_tarjeta,//se recibe
+        "mensaje_usuario": "Ninguno",
+        "carnet": "7842022"
+    }
+    if (req.body.transaccion_tipo == "PAG")
+        res.json({ "element": respPago, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
+    else
+        res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
 }
+
 
 posController.validarTarjeta = async (req, res) => {
     const { id } = req.params;
@@ -403,7 +515,24 @@ posController.confirmacionFinanciamiento = (req, res) => {
         "transaccion_tipo": req.body.transaccion_tipo,//se recibe
         "codigo_mensaje": req.body.mensaje_codigo,
         "codigo_respuesta": "0000",
-        "bolet_nro": "   "
+        "boleta_nro": "   "
+    }
+    res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false })
+}
+
+posController.confirmacionPago = (req, res) => {
+    const resp = {
+        "comercio": req.body.comercio,//se recibe
+        "local": req.body.local,//se recibe
+        "caja": req.body.caja,//se recibe,
+        "transaccion_nro": req.body.transaccion_nro,
+        "transaccion_fecha": req.body.transaccion_fecha,
+        "transaccion_hora": req.body.transaccion_hora,
+        "vendedor_nro": req.body.vendedor_nro,//se recibe
+        "transaccion_tipo": req.body.transaccion_tipo,//se recibe
+        "codigo_mensaje": req.body.mensaje_codigo,
+        "codigo_respuesta": "0000",
+        "boleta_nro": "   "
     }
     res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false })
 }

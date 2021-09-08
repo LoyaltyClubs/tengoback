@@ -11,6 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.Credito, {
+        foreignKey: 'cliente_id'
+      });
+      this.belongsTo(models.Ciudad, {
+        foreignKey: 'ciudad_id'
+      });
+      this.hasMany(models.Tarjeta, {
+        foreignKey: 'cliente_id'
+      });
+      this.belongsTo(models.Empresa, {
+        foreignKey: 'empresa_id'
+      });
     }
   };
   Cliente.init({
@@ -33,10 +45,12 @@ module.exports = (sequelize, DataTypes) => {
     provincia_referencia: DataTypes.STRING,
     telefono_referencia: DataTypes.STRING,
     tipo_tel_referencia: DataTypes.STRING,
+    parentesco_referencia: DataTypes.STRING,
     ciudad_referencia: DataTypes.STRING,
     dia_pago: DataTypes.INTEGER,
     linea_credito: DataTypes.DECIMAL,
     estado: DataTypes.STRING,
+    empresa_id: DataTypes.INTEGER,
     deleted: DataTypes.BOOLEAN
   }, {
     freezeTableName: true,

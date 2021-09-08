@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      secuencia: {
+        type: Sequelize.STRING,
+      },
       descripcion: {
         type: Sequelize.STRING
       },
@@ -20,8 +23,17 @@ module.exports = {
       nro_cuotas: {
         type: Sequelize.INTEGER
       },
+      monto_capital: {
+        type: Sequelize.DECIMAL(10,2)
+      },
       monto_financiado: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL(10,2)
+      },
+      monto_cuota: {
+        type: Sequelize.DECIMAL(10,2)
+      },
+      fecha_primer_cuota: {
+        type: Sequelize.DATE
       },
       cliente_id: {
         type: Sequelize.INTEGER,

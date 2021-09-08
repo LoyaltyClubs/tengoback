@@ -29,8 +29,10 @@ module.exports = {
       nombre_referencia: "Mery Cuellar",
       telefono_referencia: "70034804",
       tipo_tel_referencia: "Celular",
+      parentesco_referencia: "Madre",
       dia_pago: 5,
       linea_credito: 6800,
+      empresa_id: 5,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -52,8 +54,10 @@ module.exports = {
       nombre_referencia: "Tatina Espinoza",
       telefono_referencia: "783209320",
       tipo_tel_referencia: "Celular",
+      parentesco_referencia: "Tía",
       dia_pago: 5,
       linea_credito: 6000,
+      empresa_id: 5,
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});
