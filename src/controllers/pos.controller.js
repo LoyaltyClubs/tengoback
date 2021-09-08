@@ -13,24 +13,26 @@ posController.leerTarjeta = async (req, res) => {
     let datos;
     try {
         datos = dato.split('ñ');
+        var tar = await tarjeta.findOne({where: {numero: datos[2].substring(0,datos[2].length-1), estado: "Vigente"}});
+        esValida=tar!=null&&tar.saldo>0?"SI":"NO"
+        var isNominada = datos[0].includes("TARJETA")?false:true;
     }catch (error){
         esValida="NO";
     }
-    var isNominada = datos[0].includes("TARJETA")?false:true;
-        const resp = {
-            "element": 
-                {
-                    "esValida": esValida,
-                    "tipoTarjeta":isNominada?"Nominada":"Innominada",
-                    "cedula":isNominada?datos[1].substring(9,18):null,
-                    "version":isNominada?datos[1].substring(datos[1].length-4,datos[1].length-1):null,
-                    "nrotarjeta":datos[2].substring(0,datos[2].length-1),
-                    "mesanioexpiracion":datos[1].substring(datos[1].length-8,datos[1].length-4)
-                },
-            "errors":[],
-            "messages":[],
-            "hasErrors":false,
-            "hasMessages":false,
+    const resp = {
+        "element": 
+            {
+                "esValida": esValida,
+                "tipoTarjeta":isNominada?"Nominada":"Innominada",
+                "cedula":isNominada?datos[1].substring(9,18):null,
+                "version":isNominada?datos[1].substring(datos[1].length-4,datos[1].length-1):null,
+                "nrotarjeta":datos[2].substring(0,datos[2].length-1),
+                "mesanioexpiracion":datos[1].substring(datos[1].length-8,datos[1].length-4)
+            },
+        "errors":[],
+        "messages":[],
+        "hasErrors":false,
+        "hasMessages":false,
         }
     res.json(resp);
 }
