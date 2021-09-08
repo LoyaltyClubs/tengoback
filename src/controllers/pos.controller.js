@@ -2,6 +2,9 @@ const tarjeta = require('../models').Tarjeta
 const cliente = require('../models').Cliente
 const empresa = require('../models').Empresa
 
+const ClienteService = require ('../services/cliente.service');
+
+
 const posController = {}
 
 posController.leerTarjeta = async (req, res) => {
@@ -32,251 +35,6 @@ posController.leerTarjeta = async (req, res) => {
     res.json(resp);
 }
 
-/*posController.leerTarjeta = async (req, res) => {
-    var dato = req.body.dato;
-    const tipoTarjeta = {}
-    const { nominada = 1, innominada = 2 } = tipoTarjeta
-    //funcion para respuesta de error
-    let msg
-    const msgError = (msg, statusCode = 401) => {
-        res.status(statusCode).json({
-            message: msg
-        })
-    }
-    let modeloResp = {}
-    const objRespuesta = (esValida, tipo_tarjeta, cedula, version, nrotarjeta, expiracion, error, msg) => {
-        modeloResp = {
-            element:
-            {
-                esValida: esValida,
-                tipoTarjeta: tipo_tarjeta,
-                cedula: cedula,
-                version: version,
-                nrotarjeta: nrotarjeta,
-                mesanioexpiracion: expiracion
-            },
-            errors: [error],
-            messages: [msg],
-            hasErrors: false,
-            hasMessages: false,
-        }
-    }
-    try {
-        ////////
-        const respId = await tarjeta.findAll({
-            where: {
-                numero: dato
-            }
-        })
-        ///////
-        const resp = await tarjeta.findOne({
-            where: {
-                numero: dato,
-                estado: 'vigente'
-            }
-        })
-        //////////
-        //validar que el id exista
-        if (respId.length == 0) {
-            msg = 'Numero de tarjeta incorrecto'
-            objRespuesta(
-                'no',
-                null,
-                null,
-                null,
-                null,
-                null,
-                '',
-                msg
-            )
-            return res.status(400).json({ modeloResp })
-        }
-        if (resp !== null) {
-            //validar el estado de la tarjeta
-            let fecha = resp.fecha_vencimiento.toString().split(" ")
-            if (resp.estado == "vigente" && resp.tipo_id == nominada) {
-                resp.tipo_id = {
-                    tipo: 'nominada',
-                    id: resp.tipo_id
-                }
-                objRespuesta(
-                    'si',
-                    resp.tipo_id,
-                    resp.cliente_id,
-                    null,
-                    resp.numero,
-                    `${fecha[1]}-${fecha[3]}`,
-                    null,
-                    null
-                )
-                console.log(resp.tipo_id);
-                return res.status(200).json({ modeloResp })
-            }
-            if (resp.estado == "vigente" && resp.tipo_id == innominada) {
-                console.log('innominada');
-                resp.tipo_id = {
-                    tipo: 'innominada',
-                    id: resp.tipo_id
-                }
-                resp.cliente_id = ''
-                objRespuesta(
-                    'si',
-                    resp.tipo_tarjeta,
-                    resp.cliente_id,
-                    null,
-                    resp.numero,
-                    `${fecha[1]}-${fecha[3]}`,
-                    null,
-                    null
-                )
-                return res.status(200).json({ modeloResp })
-            }
-        }
-        else {
-            msg = 'La tarjeta ya no esta vigente'
-            objRespuesta(
-                'no',
-                null,
-                null,
-                null,
-                null,
-                null,
-                '',
-                msg
-            )
-            return res.status(400).json({ modeloResp })
-        }
-    }
-    catch (error) {
-        console.log(error.message);
-        console.log(error);
-        // msgError(error, 500)
-        objRespuesta(
-            'no',
-            null,
-            null,
-            null,
-            null,
-            null,
-            error.name,
-            error.message
-        )
-        return res.status(500).json({ modeloResp })
-    }
-}*/
-
-/*posController.finaciamiento = async (req, res) => {
-    const {
-        numero_tarjeta,
-        comercio,
-        local,
-        caja,
-        transaccion_nro,
-        transaccion_fecha,
-        transaccion_hora,
-        vendedor_nro,
-        transaccion_tipo,
-        monto_financiar,
-        cantidad_cuotas,
-        mensaje_codigo
-    } = req.body
-    // var total = parseFloat(req.body.monto_financiar) + req.body.monto_financiar * 0.02;
-    // var cuota = total / req.body.cantidad_cuotas;
-    let modeloResp, modeloRespPago = {}
-    const objRespPago = (apellido_paterno, apellido_materno, nombres) => {
-        modeloRespPago = {
-            "comercio": comercio,//se recibe
-            "local": local,//se recibe
-            "caja": caja,//se recibe
-            "transaccion_nro": transaccion_nro,//se recibe
-            "transaccion_fecha": transaccion_fecha,//se recibe
-            "transaccion_hora": transaccion_hora,//se recibe
-            "vendedor_nro": vendedor_nro,//se recibe
-            "transaccion_tipo": transaccion_tipo,//se recibe
-            "mensaje_codigo": mensaje_codigo,
-            "mensaje": "Proceso realizado correctamente",
-            "apellido_paterno": apellido_paterno,
-            "apellido_materno": apellido_materno,
-            "nombres": nombres,
-            "estado_cliente": "",
-            "morosidad": 0,
-            "permite_abono": 1,
-            "total_pagar": 42.22,
-            "monto_vencido": 0.0,
-            "monto_pago_anticipado": 0.0,
-            "permite_recuperado": 0,
-            "monto_deuda_castigada": 0.00,
-            "permite_pago_minimo": 0,
-            "pie_minimo_pago_minimo": 0.00,
-            "saldo_pago_minimo": 0.00,
-            "permite_repactacion": 0,
-            "deuda_total": 100.00,
-            "pie_minimo_repactacion": 0.00,
-            "descuento": 0.00,//se recibe
-            "saldo_repactacion": 0.00,
-            "monto_afecto": 0.00
-        }
-    }
-
-    const objResp = (apellido_paterno, apellido_materno, nombres) => {
-        modeloResp = {
-            "comercio": comercio,//se recibe
-            "local": local,//se recibe
-            "caja": caja,//se recibe
-            "transaccion_nro": transaccion_nro,//se recibe
-            "transaccion_fecha": transaccion_fecha,//se recibe
-            "transaccion_hora": transaccion_hora,//se recibe
-            "vendedor_nro": vendedor_nro,//se recibe
-            "transaccion_tipo": transaccion_tipo,//se recibe
-            "codigo_mensaje": "000",
-            "mensaje": "Proceso realizado correctamente",
-            "apellido_paterno": apellido_paterno,
-            "apellido_materno": apellido_materno,
-            "nombres": nombres,
-            "monto_financiar": parseFloat(monto_financiar),//se recibe
-            "total_credito": total,
-            "tasa_interes": 2,
-            "tasa_impuesto_timbre": 2,
-            "monto_retencion": 0.00,
-            "monto_comision": 0.00,
-            "codigo_autorizacion": "000000000012",
-            "cantidad_cuotas": cantidad_cuotas,//se recibe
-            "fecha_primer_vencimiento": "20210809",
-            "valor_cuota": cuota,//se calcula
-            "gasto_evaluacion_cuota": 0.0,
-            "total_pagar_mensual": cuota,//se calcula
-            "numero_tarjeta": numero_tarjeta,//se recibe
-            "mensaje_usuario": "Ninguno",
-            "carnet": "7842022"
-        }
-
-    }
-
-    try {
-        const respTarjeta = await tarjeta.findOne({
-            where: {
-                numero: numero
-            }
-
-        })
-        const respCliente = await cliente.findOne({
-            where: {
-                id: respTarjeta.cliente_id
-            }
-        })
-        return console.log(respTarjeta, '//////', respCliente);
-
-    } catch (error) {
-
-    }
-
-
-    if (req.body.transaccion_tipo == "PAG")
-        res.json({ "element": respPago, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
-    else
-        res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
-}*/
-
 posController.finaciamiento = async (req, res) => {
     const {
         numero_tarjeta,
@@ -303,16 +61,12 @@ posController.finaciamiento = async (req, res) => {
     var mensaje;
 
     const datosCliente = await tarjeta.findOne({where: {numero: numero_tarjeta, deleted: false}, include: ['Cliente']});
-    const planCliente = await empresa.findOne({where: {cliente_id: datosCliente.Cliente.id, deleted: false}, include: ['Plan']});
-    mensaje=datosCliente==null?"Tarjeta Innomidada no es de un cliente":"";
-    console.log(planCliente.Plan.nombre);
-    console.log(mensaje);
-
-    var total = parseFloat(req.body.monto_financia)+req.body.monto_financia*0.02;
-    var cuota = total/req.body.cantidad_cuotas;
-    //var numero_tarjeta = req.body.numero_tarjeta;
-
-    // Segun el numero la tarjeta buscar al cliente, si no es cliente devolver, no es de un cliente
+    const planCliente = await empresa.findOne({where: {id: datosCliente.Cliente.empresa_id, deleted: false}, include: ['Plan']});
+    mensaje=datosCliente==null?"Tarjeta Innomidada no es de un cliente":"Financiamiento Aprobado";
+    const monto_cuota = ClienteService.calculoCuotas(planCliente.Plan.interes,cantidad_cuotas, monto_financia);
+    const total_credito = monto_cuota*parseInt(cantidad_cuotas);
+    const fecha = new Date();
+    
 
     const respPago = {
         "comercio":req.body.comercio,//se recibe
@@ -348,34 +102,35 @@ posController.finaciamiento = async (req, res) => {
     }
 
     const resp = {
-        "comercio":req.body.comercio,//se recibe
-        "local":req.body.local,//se recibe
-        "caja":req.body.caja,//se recibe
-        "transaccion_nro":req.body.transaccion_nro,//se recibe
-        "transaccion_fecha":req.body.transaccion_fecha,//se recibe
-        "transaccion_hora":req.body.transaccion_hora,//se recibe
-        "vendedor_nro":req.body.vendedor_nro,//se recibe
-        "transaccion_tipo":req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje":req.body.mensaje_codigo,
+        "comercio":comercio,//se recibe
+        "local":local,//se recibe
+        "caja":caja,//se recibe
+        "transaccion_nro":transaccion_nro,//se recibe
+        "transaccion_fecha":transaccion_fecha,//se recibe
+        "transaccion_hora":transaccion_hora,//se recibe
+        "vendedor_nro":vendedor_nro,//se recibe
+        "transaccion_tipo":transaccion_tipo,//se recibe
+        "codigo_mensaje":mensaje_codigo,
         "mensaje":mensaje,
         "apellido_paterno":datosCliente.Cliente.apellido_paterno,
         "apellido_materno":datosCliente.Cliente.apellido_materno,
         "nombres":datosCliente.Cliente.nombre,    
-        "monto_financia":parseFloat(req.body.monto_financia),//se recibe
-        "total_credito":total,
-        "tasa_interes":2,
-        "tasa_impuesto_timbre":2,
-        "monto_retencion":0.00,
-        "monto_comision":0.00,
+        "monto_financiar":monto_financia,//se recibe
+        "total_credito":total_credito.toString(),
+        "tasa_interes":planCliente.Plan.interes,
+        "tasa_impuesto_timbre":"",
+        "monto_retencion":"0.00",
+        "monto_comision":"0.00",
         "codigo_autorizacion":"000000000012",
-        "cantidad_cuotas":req.body.cantidad_cuotas,//se recibe
-        "fecha_primer_vencimiento":"20210809",
-        "valor_cuota":cuota,//se calcula
-        "gasto_evaluacion":0.0,
-        "total_pagar_mensual":cuota,//se calcula
-        "numero_tarjeta":req.body.numero_tarjeta,//se recibe
-        "mensaje_usuario":"Ninguno",
-        "carnet":"7842022"
+        "cantidad_cuotas":cantidad_cuotas,
+        "fecha_primer_vencimiento":fecha.getFullYear().toString()+(fecha.getMonth()+2).toLocaleString('en-US',{minimumIntegerDigits: 2,
+            useGrouping: false})+datosCliente.Cliente.dia_pago.toLocaleString('en-US',{minimumIntegerDigits: 2,
+                useGrouping: false}),
+        "valor_cuota":monto_cuota.toString(),
+        "total_pagar_mensual":monto_cuota.toString(),
+        "numero_tarjeta":numero_tarjeta,
+        "mensaje_usuario":"  ",
+        "carnet":datosCliente.Cliente.ci.toString()
     }
     if (req.body.transaccion_tipo=="PAG")
         res.json({"element":respPago,"errors":[],"messages":[],"hasError":false,"hasMessages":false});
