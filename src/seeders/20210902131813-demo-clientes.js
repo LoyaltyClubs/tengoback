@@ -16,7 +16,7 @@ module.exports = {
       apellido_paterno: "Arroyo",
       apellido_materno: "Cuellar",
       estado_civil: "Soltero",
-      fecha_nacimiento: new Date(1994,8,18),
+      fecha_nacimiento: new Date(1994, 8, 18),
       sexo: "Masculino",
       ci: "7842022",
       calle_particular: "Calle 1",
@@ -32,7 +32,7 @@ module.exports = {
       parentesco_referencia: "Madre",
       dia_pago: 5,
       linea_credito: 6800,
-      empresa_id: 5,
+      empresa_id: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -41,7 +41,7 @@ module.exports = {
       apellido_paterno: "Mercado",
       apellido_materno: "Cabrera",
       estado_civil: "Soltero",
-      fecha_nacimiento: new Date(1990,5,10),
+      fecha_nacimiento: new Date(1990, 5, 10),
       sexo: "Femenino",
       ci: "7737738",
       calle_particular: "Enrique Finot",
@@ -57,12 +57,12 @@ module.exports = {
       parentesco_referencia: "Tía",
       dia_pago: 5,
       linea_credito: 6000,
-      empresa_id: 5,
+      empresa_id: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});
   },
-  
+
 
   down: async (queryInterface, Sequelize) => {
     /**
