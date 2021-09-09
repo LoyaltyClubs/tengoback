@@ -15,7 +15,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       monto: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL(10,2),
       },
       fecha_limite: {
         type: Sequelize.DATE

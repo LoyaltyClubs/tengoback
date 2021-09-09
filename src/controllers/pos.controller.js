@@ -65,9 +65,13 @@ posController.finaciamiento = async (req, res) => {
     const datosCliente = await tarjeta.findOne({where: {numero: numero_tarjeta, deleted: false}, include: ['Cliente']});
     const planCliente = await empresa.findOne({where: {id: datosCliente.Cliente.empresa_id, deleted: false}, include: ['Plan']});
     mensaje=datosCliente==null?"Tarjeta Innomidada no es de un cliente":"Financiamiento Aprobado";
-    const monto_cuota = ClienteService.calculoCuotas(planCliente.Plan.interes,cantidad_cuotas, monto_financia);
+    const monto_cuota = await ClienteService.calculoCuotas(planCliente.Plan.interes,cantidad_cuotas, monto_financia);
     const total_credito = monto_cuota*parseInt(cantidad_cuotas);
     const fecha = new Date();
+
+    const cod_autorizacion = await ClienteService.obtenerCodAutorizacion(datosCliente.Cliente.id);
+    console.log("monto_cuota "+monto_cuota);
+    var cred = await ClienteService.crearCreditoCuotas(cod_autorizacion,"Compra en "+comercio,cantidad_cuotas,datosCliente.Cliente.dia_pago,monto_cuota,monto_financia,total_credito,datosCliente.Cliente.id);
     
 
     const respPago = {
@@ -123,7 +127,7 @@ posController.finaciamiento = async (req, res) => {
         "tasa_impuesto_timbre":"",
         "monto_retencion":"0.00",
         "monto_comision":"0.00",
-        "codigo_autorizacion":"000000000012",
+        "codigo_autorizacion":cod_autorizacion,
         "cantidad_cuotas":cantidad_cuotas,
         "fecha_primer_vencimiento":fecha.getFullYear().toString()+(fecha.getMonth()+2).toLocaleString('en-US',{minimumIntegerDigits: 2,
             useGrouping: false})+datosCliente.Cliente.dia_pago.toLocaleString('en-US',{minimumIntegerDigits: 2,
