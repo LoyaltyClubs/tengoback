@@ -217,7 +217,14 @@ posController.pagoCuota = (req, res) => {
     res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
 }
 
-posController.confirmacionFinanciamiento = (req, res) => {
+posController.confirmacionFinanciamiento = async (req, res) => {
+    const {
+        nro_boleta,
+        carnet
+    } = req.body
+
+    codigo_resp = await ClienteService.confirmarCredito(nro_boleta);
+    
     const resp = {
         "comercio":req.body.comercio,//se recibe
         "local":req.body.local,//se recibe
@@ -228,8 +235,8 @@ posController.confirmacionFinanciamiento = (req, res) => {
         "vendedor_nro":req.body.vendedor_nro,//se recibe
         "transaccion_tipo":req.body.transaccion_tipo,//se recibe
         "codigo_mensaje":req.body.mensaje_codigo,
-        "codigo_respuesta":"0000",
-        "boleta_nro":"   "
+        "codigo_respuesta":codigo_resp,
+        "boleta_nro":codigo_resp=="000"?nro_boleta:"No se encuentra"
     }
     res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false })
 }

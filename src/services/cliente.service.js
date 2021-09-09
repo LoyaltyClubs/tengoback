@@ -52,6 +52,15 @@ const ClienteService = {
         },{include: [
             'Cuota',
         ]});
+    },
+
+    async confirmarCredito(boleta){
+        const cred = await credito.findOne({where: {cod_autorizacion: parseInt(boleta), estado: 'SIN CONFIRMAR'}});
+        if (cred==null)
+            return "001";
+        else
+            credito.update({estado: "ACTIVA"},{where: {id: cred.id}})
+        return "000";
     }
 }
 
