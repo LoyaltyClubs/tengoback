@@ -70,7 +70,6 @@ posController.finaciamiento = async (req, res) => {
     const fecha = new Date();
 
     const cod_autorizacion = await ClienteService.obtenerCodAutorizacion(datosCliente.Cliente.id);
-    console.log("monto_cuota "+monto_cuota);
     var cred = await ClienteService.crearCreditoCuotas(cod_autorizacion,"Compra en "+comercio,cantidad_cuotas,datosCliente.Cliente.dia_pago,monto_cuota,monto_financia,total_credito,datosCliente.Cliente.id);
     
 
@@ -174,7 +173,6 @@ posController.validarTarjeta = async (req, res) => {
 
         }
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error })
 
     }
