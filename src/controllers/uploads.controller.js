@@ -28,7 +28,7 @@ const subirArchivo = (archivo, extensionesValidas = ['png', 'jpg', 'jpeg', 'gif'
 const borrarArchivo = (nombre, carpeta = '') => {
     console.log(nombre)
     return new Promise((resolve, reject) => {
-        const pathFile = path.join(__dirname, '../../uploads/', carpeta, nombre)
+        const pathFile = path.join(__dirname, '../uploads/', carpeta, nombre)
         console.log(pathFile)
         if (!fs.existsSync(pathFile)) {
             return reject(false)
