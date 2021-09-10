@@ -9,7 +9,7 @@ creditoController.get = (req, res) => {
 }
 
 creditoController.getByCliente = (req, res) => {
-    return credito.findAll({ where: { id: req.params.id, deleted: false, estado: {[Op.not]: "SIN CONFIRMAR"}}}).
+    return credito.findAll({ where: { cliente_id: req.params.id, deleted: false, estado: {[Op.not]: "SIN CONFIRMAR"}}}).
         then(credito => res.status(200).send(credito))
         .catch(error => res.status(400).send(error));
 }
