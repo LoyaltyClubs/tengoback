@@ -10,7 +10,7 @@ cuotaController.get = (req, res) => {
 
 cuotaController.getCuotasByCredito = (req, res) => {
     const { id } = req.params;
-    return cuota.findAll({ where: { id: id, deleted: false } }).
+    return cuota.findAll({ where: { credito_id: id, deleted: false } }).
         then(cuota => res.status(200).send(cuota))
         .catch(error => res.status(400).send(error));
 }
