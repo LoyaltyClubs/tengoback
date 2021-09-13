@@ -61,22 +61,22 @@ cargar.cargarExcel = async (req = request, res = response) => {
             await dataExcel.forEach(dato => {
                 nit.push(dato.nit)
             })
-            //busca los clientes por numero de carnet
+            //busca a las empresas por nit
             const respuesta = await empresa.findAll({
                 where: {
                     nit: nit
                 }
             })
-            //ecuentra carnet ya registrados
+            //ecuentra nits ya registrados
             let nitsEncontrados = [];
             await respuesta.forEach(empresa => {
                 nitsEncontrados.push(empresa.nit);
             })
-            //carnets que no estan registrdor en la bd
+            //nits que no estan registrdor en la bd
             const nitsSinRegistrar = await nit.filter(carnet => {
                 return !nitsEncontrados.includes(carnet.toString())
             })
-            //crea un arrglo con los carnets que no esten registrados previamente
+            //crea un arrglo con los nits que no esten registrados previamente
             const empresas = await dataExcel.filter(dato => {
                 return nitsSinRegistrar.includes(dato.nit)
             })
