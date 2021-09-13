@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       estado: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
       },
       nro_cuotas: {
         type: Sequelize.INTEGER

@@ -1,5 +1,5 @@
 const credito = require('../models').Credito;
-
+const { Op } = require("sequelize");
 const creditoController = { }
 
 creditoController.get = (req, res) => {
@@ -9,7 +9,7 @@ creditoController.get = (req, res) => {
 }
 
 creditoController.getByCliente = (req, res) => {
-    return credito.findAll({ where: { id: req.params.id, deleted: false } }).
+    return credito.findAll({ where: { cliente_id: req.params.id, deleted: false, estado: {[Op.not]: "SIN CONFIRMAR"}}}).
         then(credito => res.status(200).send(credito))
         .catch(error => res.status(400).send(error));
 }

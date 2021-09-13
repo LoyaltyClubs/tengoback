@@ -29,7 +29,9 @@ module.exports = (sequelize, DataTypes) => {
     monto_financiado: DataTypes.DECIMAL,
     fecha_primer_cuota: DataTypes.DATE,
     deleted: DataTypes.BOOLEAN,
-    cliente_id: DataTypes.INTEGER
+    monto_cuota: DataTypes.DECIMAL,
+    cliente_id: DataTypes.INTEGER,
+    cod_autorizacion: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Credito',
