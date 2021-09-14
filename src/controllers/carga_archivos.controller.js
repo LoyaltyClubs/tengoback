@@ -2,6 +2,7 @@ const { request, response } = require('express')
 const cliente = require('../models').Cliente
 const empresa = require('../models').Empresa
 const { subirArchivo, borrarArchivo } = require('./uploads.controller')
+const { obtenerCiudad, obtenerEmpresa } = require('./obtenerCiudadExel')
 const XLSX = require('xlsx')
 
 const cargar = {}
@@ -14,11 +15,42 @@ cargar.cargarExcel = async (req = request, res = response) => {
     }
     const { archivo } = req.files
     const { esCliente } = req.body
+    const modeloCliente = []
     try {
         const nombre = await subirArchivo(archivo, ['xlsx'], '');
         const worbook = XLSX.readFile(`src/uploads/${nombre}`);//ruta de donde se obtiene el documento
         const worbookSheets = worbook.SheetNames;
         const dataExcel = XLSX.utils.sheet_to_json(worbook.Sheets[worbookSheets[0]]);
+
+
+        await dataExcel.forEach(dato => {
+            modeloCliente.push({
+                nombre: dato.nombre,
+                apellido_paterno: dato.apellido_paterno,
+                apellido_materno: dato.apellido_materno,
+                estado_civil: dato.estado_civil,
+                fecha_nacimiento: dato.fecha_nacimiento,
+                sexo: dato.sexo,
+                ci: dato.cedula,
+                calle_particular: dato.calle_particular,
+                zona: dato.zona,
+                provincia: dato.provincia,
+                barrio: dato.barrio,
+                ciudad_id: obtenerCiudad(dato.ciudad),
+                telefono_fijo: dato.telefono,
+                telefono_celular: dato.celular,
+                email: dato.email,
+                nombre_referencia: dato.nombre_de_referencia,
+                telefono_referencia: dato.telefono_de_referencia,
+                tipo_tel_referencia: dato.tipo_telefono_de_referencia,
+                parentesco_referencia: dato.parentesco_de_referencia,
+                ciudad_referencia: dato.ciudad_de_referencia,
+                dia_pago: dato.dia_de_pago,
+                linea_credito: dato.linea_de_credito,
+                empresa_id: obtenerEmpresa(dato.nombre_de_empresa)
+            })
+        })
+        return console.log(modeloCliente);
 
         if (esCliente == 'true') {
             // sacar todos los carnets del archivo excel
