@@ -2,7 +2,7 @@ const empresa = require('../models').Empresa
 
 const obtenerCiudad = (dato) => {
     let ciudad = dato.replace(' ', '').toLowerCase()
-    console.log(ciudad, 'es el dato');
+    // console.log(ciudad, 'es el dato');
 
     if (ciudad == 'santacruz') {
         return 1
@@ -33,22 +33,16 @@ const obtenerCiudad = (dato) => {
     }
 }
 
-const obtenerEmpresa = async (dato) => {
+const obtenerEmpresa = (dato, array = []) => {
     // let ciudad = dato.replace(' ', '').toLowerCase()
-    try {
-        const resp = await empresa.findOne({ where: { nombre: dato } })
-        return (resp != null) ? resp.id : 'no existe una empresa con ese nombre'
+    // const resp = await empresa.findAll()
+    // console.log(array.nombre);
+    array.forEach(empresa => {
 
-    } catch (error) {
-        console.log({
-            error,
-            message: error.message
-        });
-        return {
-            error,
-            message: error.message
-        }
-    }
+        empresa.nombre == dato ? console.log({ ids: empresa.id, empresa: empresa.nombre, dato }) : 'no hay empresa'
+    });
+
+
 
 }
 

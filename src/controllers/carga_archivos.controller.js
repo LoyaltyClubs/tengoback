@@ -22,8 +22,10 @@ cargar.cargarExcel = async (req = request, res = response) => {
         const worbookSheets = worbook.SheetNames;
         const dataExcel = XLSX.utils.sheet_to_json(worbook.Sheets[worbookSheets[0]]);
 
+        const resp = await empresa.findAll()
 
         await dataExcel.forEach(dato => {
+
             modeloCliente.push({
                 nombre: dato.nombre,
                 apellido_paterno: dato.apellido_paterno,
@@ -47,7 +49,7 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 ciudad_referencia: dato.ciudad_de_referencia,
                 dia_pago: dato.dia_de_pago,
                 linea_credito: dato.linea_de_credito,
-                empresa_id: obtenerEmpresa(dato.nombre_de_empresa)
+                empresa_id: obtenerEmpresa(dato.nombre_de_empresa, resp)
             })
         })
         return console.log(modeloCliente);
