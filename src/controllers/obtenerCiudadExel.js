@@ -33,20 +33,7 @@ const obtenerCiudad = (dato) => {
     }
 }
 
-const obtenerEmpresa = (dato, array = []) => {
-    // let ciudad = dato.replace(' ', '').toLowerCase()
-    // const resp = await empresa.findAll()
-    // console.log(array.nombre);
-    array.forEach(empresa => {
-
-        empresa.nombre == dato ? { ids: empresa.id } : 'no hay empresa'
-    });
-
-
-
-}
 
 module.exports = {
     obtenerCiudad,
-    obtenerEmpresa
 }
