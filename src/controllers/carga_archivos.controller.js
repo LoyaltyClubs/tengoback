@@ -23,74 +23,74 @@ cargar.cargarExcel = async (req = request, res = response) => {
         const dataExcel = XLSX.utils.sheet_to_json(worbook.Sheets[worbookSheets[0]]);
 
         if (esCliente == 'true') {
-            let vueltas = 0
-            let msg = ''
-            dataExcel.forEach(async dato => {
-                const resp = await empresa.findOne({ where: { nombre: dato.nombre_de_empresa }, attributes: ['id'] })
-                const respCli = await cliente.findOne({ where: { ci: dato.cedula }, attributes: ['ci'] })
-                const Cli = await cliente.findAll()
-                vueltas += 1
-                if (respCli == null && resp !== null) {
-                    modeloCliente.push({
-                        nombre: dato.nombre,
-                        apellido_paterno: dato.apellido_paterno,
-                        apellido_materno: dato.apellido_materno,
-                        estado_civil: dato.estado_civil,
-                        fecha_nacimiento: dato.fecha_nacimiento,
-                        sexo: dato.sexo,
-                        ci: dato.cedula,
-                        calle_particular: dato.calle_particular,
-                        zona: dato.zona,
-                        provincia: dato.provincia,
-                        barrio: dato.barrio,
-                        ciudad_id: obtenerCiudad(dato.ciudad),
-                        telefono_fijo: dato.telefono,
-                        telefono_celular: dato.celular,
-                        email: dato.email,
-                        nombre_referencia: dato.nombre_de_referencia,
-                        telefono_referencia: dato.telefono_de_referencia,
-                        tipo_tel_referencia: dato.tipo_telefono_de_referencia,
-                        parentesco_referencia: dato.parentesco_de_referencia,
-                        ciudad_referencia: dato.ciudad_de_referencia,
-                        dia_pago: dato.dia_de_pago,
-                        linea_credito: dato.linea_de_credito,
-                        empresa_id: resp != null || resp != undefined || resp != 0 ? resp.id : null
-                    })
-                    console.log(resp.id);
-                }
-                else {
-                    console.log(modeloCliente.length);
-                    console.log('no se puede crear');
-                    msg = 'no se pudo agregar, el registro ya existe o no tiene una empresa valida'
-                }
-                console.log(vueltas);
-                if (vueltas == dataExcel.length) {
-                    console.log(modeloCliente)
-                    await cliente.bulkCreate(modeloCliente)
-                    res.status(201).json({
-                        ok: true,
-                        msg: "Clientes creados correctamente",
-                        regAgregados: modeloCliente.length,
-                        regExistentes: Cli.length,
-                        dataExcel
+            let empresaId = 0
+            const resp = await empresa.findAll()
 
-                    })
-                    borrarArchivo(nombre)
-                } else {
-                    console.log(modeloCliente)
-                    await cliente.bulkCreate(modeloCliente)
-                    res.status(201).json({
-                        ok: true,
-                        msg: msg,
-                        regAgregados: modeloCliente.length,
-                        regExistentes: Cli.length,
-                        dataExcel
+            dataExcel.forEach(dato => {
+                resp.forEach(empresa => {
+                    return empresaId = dato.nombre_de_empresa.replace(empresa.nombre, empresa.id)
+                })
+                console.log(empresaId);
+                modeloCliente.push({
+                    nombre: dato.nombre,
+                    apellido_paterno: dato.apellido_paterno,
+                    apellido_materno: dato.apellido_materno,
+                    estado_civil: dato.estado_civil,
+                    fecha_nacimiento: dato.fecha_nacimiento,
+                    sexo: dato.sexo,
+                    ci: dato.cedula,
+                    calle_particular: dato.calle_particular,
+                    zona: dato.zona,
+                    provincia: dato.provincia,
+                    barrio: dato.barrio,
+                    ciudad_id: obtenerCiudad(dato.ciudad),
+                    telefono_fijo: dato.telefono,
+                    telefono_celular: dato.celular,
+                    email: dato.email,
+                    nombre_referencia: dato.nombre_de_referencia,
+                    telefono_referencia: dato.telefono_de_referencia,
+                    tipo_tel_referencia: dato.tipo_telefono_de_referencia,
+                    parentesco_referencia: dato.parentesco_de_referencia,
+                    ciudad_referencia: dato.ciudad_de_referencia,
+                    dia_pago: dato.dia_de_pago,
+                    linea_credito: dato.linea_de_credito,
+                    empresa_id: isNaN(empresaId) ? null : empresaId
+                })
+            })
+            // sacar todos los carnets del archivo excel
+            let carnets = [];
+            console.log(modeloCliente);
+            await modeloCliente.forEach(dato => {
+                carnets.push(dato.ci)
+            })
+            //busca los clientes por numero de carnet
+            const respuesta = await cliente.findAll()
+            // console.log(respuesta, 'esta es la respuesta');
+            //ecuentra carnet ya registrados
+            let carnetsEncontrados = [];
+            await respuesta.forEach(customer => {
+                carnetsEncontrados.push(customer.ci);
+            })
+            //carnets que no estan registrdor en la bd
+            const carnetsSinRegistrar = carnets.filter(carnet => !carnetsEncontrados)
+            console.log(carnetsEncontrados, 'esto son los carnets encontrados');
+            console.log(carnets, 'esto son los carnets ');
+            console.log(carnetsSinRegistrar, 'esto son los carnets sin registrar');
 
-                    })
-                    borrarArchivo(nombre)
+            //crea un arrglo con los carnets que no esten registrados previamente
+            const clientes = await modeloCliente.filter(dato => {
+                return carnetsSinRegistrar.includes(dato.ci)
+            })
 
-                }
-                console.log("no ha llegado aun")
+            await cliente.bulkCreate(clientes)
+            borrarArchivo(nombre)
+            return res.status(201).json({
+                ok: true,
+                msg: "Clientes creados correctamente: " + clientes.length,
+                regAgregados: clientes.length,
+                regExistentes: respuesta.length,
+                clientes
+
             })
         } else {
             let nit = []
@@ -118,7 +118,8 @@ cargar.cargarExcel = async (req = request, res = response) => {
             })
 
             await empresa.bulkCreate(empresas)
-            res.status(201).json({
+            borrarArchivo(nombre)
+            return res.status(201).json({
                 ok: true,
                 msg: "Empresas creados correctamente",
                 regAgregados: empresas.length,
@@ -128,12 +129,11 @@ cargar.cargarExcel = async (req = request, res = response) => {
             })
 
 
-            borrarArchivo(nombre)
         }
 
     } catch (error) {
         console.log(error);
-        res.status(400).json({
+        return res.status(400).json({
             error,
             msg: error.message
         })
