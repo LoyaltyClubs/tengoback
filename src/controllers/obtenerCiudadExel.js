@@ -39,7 +39,7 @@ const obtenerEmpresa = (dato, array = []) => {
     // console.log(array.nombre);
     array.forEach(empresa => {
 
-        empresa.nombre == dato ? console.log({ ids: empresa.id, empresa: empresa.nombre, dato }) : 'no hay empresa'
+        empresa.nombre == dato ? { ids: empresa.id } : 'no hay empresa'
     });
 
 

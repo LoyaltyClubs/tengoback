@@ -22,9 +22,10 @@ cargar.cargarExcel = async (req = request, res = response) => {
         const worbookSheets = worbook.SheetNames;
         const dataExcel = XLSX.utils.sheet_to_json(worbook.Sheets[worbookSheets[0]]);
 
-        const resp = await empresa.findAll()
 
-        await dataExcel.forEach(dato => {
+
+        dataExcel.forEach(async dato => {
+            const resp = await empresa.findOne({ where: { nombre: dato.nombre_de_empresa }, attributes: ['id'] })
 
             modeloCliente.push({
                 nombre: dato.nombre,
@@ -49,11 +50,12 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 ciudad_referencia: dato.ciudad_de_referencia,
                 dia_pago: dato.dia_de_pago,
                 linea_credito: dato.linea_de_credito,
-                empresa_id: obtenerEmpresa(dato.nombre_de_empresa, resp)
+                empresa_id: resp != null || resp != undefined || resp != 0 ? resp.id : console.log(resp)
             })
+            // console.log(modeloCliente);
         })
-        return console.log(modeloCliente);
-
+        await console.log(modeloCliente, 'esta aqui');
+        return 'termina'
         if (esCliente == 'true') {
             // sacar todos los carnets del archivo excel
             let carnets = [];
