@@ -25,7 +25,7 @@ const ClienteService = {
         //Buscar si ese cliente tiene algun otro credito sin confirmar para usar el mismo cod_autorizacion
         //Sino tuviera crear uno nuevo
         var cred = await credito.findOne({where: {cliente_id: id, estado: 'SIN CONFIRMAR'}});
-        return cred!=null?cred.cod_autorizacion:new Date().toString();        
+        return cred!=null?cred.cod_autorizacion:Date.now();        
     },
 
     async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id){
