@@ -66,13 +66,11 @@ posController.finaciamiento = async (req, res) => {
     const planCliente = await empresa.findOne({where: {id: datosCliente.Cliente.empresa_id, deleted: false}, include: ['Plan']});
     mensaje=datosCliente==null?"Tarjeta Innomidada no es de un cliente":"Financiamiento Aprobado";
     const monto_cuota = await ClienteService.calculoCuotas(planCliente.Plan.interes,cantidad_cuotas, monto_financia);
-    const total_credito = monto_cuota*parseInt(cantidad_cuotas);
+    
+    var total_credito = monto_cuota*parseInt(cantidad_cuotas);
     const fecha = new Date();
-
     const cod_autorizacion = await ClienteService.obtenerCodAutorizacion(datosCliente.Cliente.id);
     var cred = await ClienteService.crearCreditoCuotas(cod_autorizacion,"Compra en "+comercio,cantidad_cuotas,datosCliente.Cliente.dia_pago,monto_cuota,monto_financia,total_credito,datosCliente.Cliente.id);
-    
-
    
 
     const resp = {
@@ -90,7 +88,7 @@ posController.finaciamiento = async (req, res) => {
         "apellido_materno":datosCliente.Cliente.apellido_materno,
         "nombres":datosCliente.Cliente.nombre,    
         "monto_financiar":monto_financia*100,//se recibe
-        "total_credito":(total_credito*100).toString(),
+        "total_credito":total_credito.toString(),
         "tasa_interes":planCliente.Plan.interes*100,
         "tasa_impuesto_timbre":"",
         "monto_retencion":"0.00",
@@ -144,7 +142,7 @@ posController.consultaEstado = async (req, res) => {
         "nombres":datosCliente.nombre,    
         "estado_cliente":datosCliente.estado,
         "morosidad":0,
-        "permite_abono":datosCliente.estado=="BLOQUEADO"?"0001":"0000",
+        "permite_abono":datosCliente.estado=="BLOQUEADO"?"0":"1",
         "total_pagar":(total*100).toString(),
         "monto_vencido":0.0,
         "monto_pago_anticipado":0.0,

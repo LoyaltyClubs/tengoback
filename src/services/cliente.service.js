@@ -1,6 +1,8 @@
 const credito = require('../models').Credito;
 const modelCuota = require('../models').Cuota;
-const plan = require('../models').Plan
+const plan = require('../models').Plan;
+const cuota_mensual = require('../models').Cuota_Mensual;
+const { Op } = require("sequelize");
 const { QueryTypes } = require('sequelize');
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
@@ -75,18 +77,16 @@ const ClienteService = {
     },
     async calculoPago(datosCliente){
         const datosPlan = await plan.findOne({where: {id: datosCliente.Empresa.plan_id}});
-        const fecha_actual = new Date();
-        const fecha_cuota = new Date(fecha_actual.getFullYear(),fecha_actual.getMonth(), datosCliente.dia_pago);
-        //Calcular monto
-        const consultaCuotas = await sequelize.query('select sum(monto) as total from cuota where ci_cliente ="' + datosCliente.ci +'" and estado not in ("PAGADO","POR PAGAR") and deleted=0',{replacements: {ci_cliente: datosCliente.ci},type: QueryTypes.SELECT});
-        var total = consultaCuotas[0].total;
-        var mantenimiento = total>100?parseFloat(datosPlan.mantenimiento):0;
-        var seguro = fecha_actual<fecha_cuota?0:parseFloat(datosPlan.seguro);
-        for (var i = 0; i< datosCliente.Creditos.length; i++){
-            total = total+parseFloat(datosCliente.Creditos[i].mora);
+        const consolidadoCuota = await cuota_mensual.sum('monto_total',{where: {estado: {[Op.not]: "PAGADO"}}})
+        var montoAdelantado = 0;
+        console.log("conso: "+consolidadoCuota);
+        if (consolidadoCuota<1){
+            for (var i=0;i<datosCliente.Creditos.length;i++){
+                montoAdelantado = montoAdelantado + parseFloat(datosCliente.Creditos[i].monto_cuota);
+            }
+            return montoAdelantado;
         }
-        total = total + seguro + mantenimiento;
-        return total;
+        return consolidadoCuota;
     }
 }
 
