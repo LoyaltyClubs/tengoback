@@ -64,7 +64,11 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 carnets.push(dato.ci)
             })
             //busca los clientes por numero de carnet
-            const respuesta = await cliente.findAll()
+            const respuesta = await cliente.findAll({
+                where: {
+                    ci: carnets
+                }
+            })
             // console.log(respuesta, 'esta es la respuesta');
             //ecuentra carnet ya registrados
             let carnetsEncontrados = [];
@@ -72,7 +76,9 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 carnetsEncontrados.push(customer.ci);
             })
             //carnets que no estan registrdor en la bd
-            const carnetsSinRegistrar = carnets.filter(carnet => !carnetsEncontrados)
+            const carnetsSinRegistrar = carnets.filter(carnet => {
+                return !carnetsEncontrados.includes(carnet.toString())
+            })
             console.log(carnetsEncontrados, 'esto son los carnets encontrados');
             console.log(carnets, 'esto son los carnets ');
             console.log(carnetsSinRegistrar, 'esto son los carnets sin registrar');
