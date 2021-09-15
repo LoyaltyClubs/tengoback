@@ -1,5 +1,16 @@
 const credito = require('../models').Credito;
 const modelCuota = require('../models').Cuota;
+const plan = require('../models').Plan
+const { QueryTypes } = require('sequelize');
+const Sequelize = require('sequelize');
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.json')[env];
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
 const ClienteService = {
     calculoCuotas(interes, cuotas, capital){
         var i = parseFloat(interes)/100;
@@ -14,7 +25,7 @@ const ClienteService = {
         //Buscar si ese cliente tiene algun otro credito sin confirmar para usar el mismo cod_autorizacion
         //Sino tuviera crear uno nuevo
         var cred = await credito.findOne({where: {cliente_id: id, estado: 'SIN CONFIRMAR'}});
-        return cred!=null?cred.cod_autorizacion:123;        
+        return cred!=null?cred.cod_autorizacion:new Date().toString();        
     },
 
     async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id){
@@ -61,6 +72,21 @@ const ClienteService = {
         else
             credito.update({estado: "ACTIVA"},{where: {id: cred.id}})
         return "000";
+    },
+    async calculoPago(datosCliente){
+        const datosPlan = await plan.findOne({where: {id: datosCliente.Empresa.plan_id}});
+        const fecha_actual = new Date();
+        const fecha_cuota = new Date(fecha_actual.getFullYear(),fecha_actual.getMonth(), datosCliente.dia_pago);
+        //Calcular monto
+        const consultaCuotas = await sequelize.query('select sum(monto) as total from cuota where ci_cliente ="' + datosCliente.ci +'" and estado not in ("PAGADO","POR PAGAR") and deleted=0',{replacements: {ci_cliente: datosCliente.ci},type: QueryTypes.SELECT});
+        var total = consultaCuotas[0].total;
+        var mantenimiento = total>100?parseFloat(datosPlan.mantenimiento):0;
+        var seguro = fecha_actual<fecha_cuota?0:parseFloat(datosPlan.seguro);
+        for (var i = 0; i< datosCliente.Creditos.length; i++){
+            total = total+parseFloat(datosCliente.Creditos[i].mora);
+        }
+        total = total + seguro + mantenimiento;
+        return total;
     }
 }
 

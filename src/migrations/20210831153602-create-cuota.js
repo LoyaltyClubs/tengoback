@@ -14,6 +14,24 @@ module.exports = {
       nro_de_cuota: {
         type: Sequelize.INTEGER
       },
+      capital: {
+        type: Sequelize.DECIMAL(10,2)
+      },
+      interes: {
+        type: Sequelize.DECIMAL(10,2)
+      },
+      honorario:{
+        type: Sequelize.DECIMAL(10,2)
+      },
+      cobros: {
+        type: Sequelize.DECIMAL(10,2)
+      },
+      pendiente: {
+        type: Sequelize.DECIMAL(10,2)
+      },
+      abonado: {
+        type: Sequelize.DECIMAL(10,2)
+      },
       monto: {
         type: Sequelize.DECIMAL(10,2),
       },
@@ -29,6 +47,9 @@ module.exports = {
           model: 'Creditos',
           key: 'id'
         } 
+      },
+      ci_cliente: {
+        type: Sequelize.STRING,
       },
       deleted: {
         type: Sequelize.BOOLEAN,

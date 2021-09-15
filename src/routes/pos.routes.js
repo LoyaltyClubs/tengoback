@@ -7,6 +7,8 @@ router.post('/leerTarjeta', posController.leerTarjeta);
 
 router.post('/financiamiento',posController.finaciamiento);
 
+router.post('/consultaPago', posController.consultaEstado)
+
 router.post('/confirmacion', posController.confirmacionFinanciamiento);
 
 router.post('/confirmacionPago', posController.confirmacionPago);

@@ -32,6 +32,9 @@ module.exports = {
       monto_cuota: {
         type: Sequelize.DECIMAL(10,2)
       },
+      mora: {
+        type: Sequelize.DECIMAL(10,2)
+      },
       fecha_primer_cuota: {
         type: Sequelize.DATE
       },

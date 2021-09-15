@@ -73,38 +73,7 @@ posController.finaciamiento = async (req, res) => {
     var cred = await ClienteService.crearCreditoCuotas(cod_autorizacion,"Compra en "+comercio,cantidad_cuotas,datosCliente.Cliente.dia_pago,monto_cuota,monto_financia,total_credito,datosCliente.Cliente.id);
     
 
-    const respPago = {
-        "comercio":req.body.comercio,//se recibe
-        "local":req.body.local,//se recibe
-        "caja":req.body.caja,//se recibe
-        "transaccion_nro":req.body.transaccion_nro,//se recibe
-        "transaccion_fecha":req.body.transaccion_fecha,//se recibe
-        "transaccion_hora":req.body.transaccion_hora,//se recibe
-        "vendedor_nro":req.body.vendedor_nro,//se recibe
-        "transaccion_tipo":req.body.transaccion_tipo,//se recibe
-        "mensaje_codigo":req.body.mensaje_codigo,//se recibe,
-        "mensaje":"Proceso realizado correctamente",
-        "apellido_paterno":"arroyo",
-        "apellido_materno":"cuellar",
-        "nombres":"ashley erwin joel",    
-        "estado_cliente":"",
-        "morosidad":0,
-        "permite_abono":1,
-        "total_pagar":42.22,
-        "monto_vencido":0.0,
-        "monto_pago_anticipado":0.0,
-        "permite_recuperado":0,
-        "monto_deuda_castigada":0.00,
-        "permite_pago_minimo":0,
-        "pie_minimo_pago_minimo":0.00,
-        "saldo_pago_minimo":0.00,
-        "permite_repactacion":0,
-        "deuda_total":100.00,
-        "pie_minimo_repactacion":0.00,
-        "descuento":0.00,
-        "saldo_repactacion":0.00,
-        "monto_afecto":0.00
-    }
+   
 
     const resp = {
         "comercio":comercio,//se recibe
@@ -120,9 +89,9 @@ posController.finaciamiento = async (req, res) => {
         "apellido_paterno":datosCliente.Cliente.apellido_paterno,
         "apellido_materno":datosCliente.Cliente.apellido_materno,
         "nombres":datosCliente.Cliente.nombre,    
-        "monto_financiar":monto_financia,//se recibe
-        "total_credito":total_credito.toString(),
-        "tasa_interes":planCliente.Plan.interes,
+        "monto_financiar":monto_financia*100,//se recibe
+        "total_credito":(total_credito*100).toString(),
+        "tasa_interes":planCliente.Plan.interes*100,
         "tasa_impuesto_timbre":"",
         "monto_retencion":"0.00",
         "monto_comision":"0.00",
@@ -131,18 +100,68 @@ posController.finaciamiento = async (req, res) => {
         "fecha_primer_vencimiento":fecha.getFullYear().toString()+(fecha.getMonth()+2).toLocaleString('en-US',{minimumIntegerDigits: 2,
             useGrouping: false})+datosCliente.Cliente.dia_pago.toLocaleString('en-US',{minimumIntegerDigits: 2,
                 useGrouping: false}),
-        "valor_cuota":monto_cuota.toString(),
-        "total_pagar_mensual":monto_cuota.toString(),
+        "valor_cuota":(monto_cuota*100).toString(),
+        "total_pagar_mensual":(monto_cuota*100).toString(),
         "numero_tarjeta":numero_tarjeta,
         "mensaje_usuario":"  ",
         "carnet":datosCliente.Cliente.ci.toString()
     }
-    if (req.body.transaccion_tipo=="PAG")
-        res.json({"element":respPago,"errors":[],"messages":[],"hasError":false,"hasMessages":false});
-    else
-        res.json({"element":resp,"errors":[],"messages":[],"hasError":false,"hasMessages":false});
+    res.json({"element":resp,"errors":[],"messages":[],"hasError":false,"hasMessages":false});
 }
 
+posController.consultaEstado = async (req, res) => {
+    const {
+        comercio,
+        local,
+        caja,
+        transaccion_nro,
+        transaccion_fecha,
+        transaccion_hora,
+        vendedor_nro,
+        transaccion_tipo,
+        mensaje_codigo,
+        rut_titular,
+        rut_adicional
+    } = req.body
+
+    //Buscar cliente
+    const datosCliente = await cliente.findOne({where: {ci: parseInt(rut_titular), deleted: false}, include: ['Creditos', 'Empresa']});
+    var total =await ClienteService.calculoPago(datosCliente);
+
+    const respPago = {
+        "comercio":comercio,//se recibe
+        "local":local,//se recibe
+        "caja":caja,//se recibe
+        "transaccion_nro":transaccion_nro,//se recibe
+        "transaccion_fecha":transaccion_fecha,//se recibe
+        "transaccion_hora":transaccion_hora,//se recibe
+        "vendedor_nro":vendedor_nro,//se recibe
+        "transaccion_tipo":transaccion_tipo,//se recibe
+        "mensaje_codigo":"000",//se recibe,
+        "mensaje":"Envio opciones de Pago..",
+        "apellido_paterno":datosCliente.apellido_paterno,
+        "apellido_materno":datosCliente.apellido_materno,
+        "nombres":datosCliente.nombre,    
+        "estado_cliente":datosCliente.estado,
+        "morosidad":0,
+        "permite_abono":datosCliente.estado=="BLOQUEADO"?"0001":"0000",
+        "total_pagar":(total*100).toString(),
+        "monto_vencido":0.0,
+        "monto_pago_anticipado":0.0,
+        "permite_recuperado":0,
+        "monto_deuda_castigada":0.00,
+        "permite_pago_minimo":0,
+        "pie_minimo_pago_minimo":0.00,
+        "saldo_pago_minimo":0.00,
+        "permite_repactacion":0,
+        "deuda_total":100.00,
+        "pie_minimo_repactacion":0.00,
+        "descuento":0.00,
+        "saldo_repactacion":0.00,
+        "monto_afecto":0.00
+    }
+    res.json({"element":respPago,"errors":[],"messages":[],"hasError":false,"hasMessages":false});
+}
 
 posController.validarTarjeta = async (req, res) => {
     const { id } = req.params;
