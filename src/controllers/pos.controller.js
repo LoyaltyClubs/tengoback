@@ -2,7 +2,7 @@ const tarjeta = require('../models').Tarjeta
 const cliente = require('../models').Cliente
 const empresa = require('../models').Empresa
 
-const ClienteService = require ('../services/cliente.service');
+const ClienteService = require('../services/cliente.service');
 
 
 const posController = {}
@@ -13,27 +13,27 @@ posController.leerTarjeta = async (req, res) => {
     let datos;
     try {
         datos = dato.split('ñ');
-        var tar = await tarjeta.findOne({where: {numero: datos[2].substring(0,datos[2].length-1), estado: "Vigente"}});
-        esValida=tar!=null&&tar.saldo>0?"SI":"NO"
-        var isNominada = datos[0].includes("TARJETA")?false:true;
-    }catch (error){
-        esValida="NO";
+        var tar = await tarjeta.findOne({ where: { numero: datos[2].substring(0, datos[2].length - 1), estado: "Vigente" } });
+        esValida = tar != null && tar.saldo > 0 ? "SI" : "NO"
+        var isNominada = datos[0].includes("TARJETA") ? false : true;
+    } catch (error) {
+        esValida = "NO";
     }
     const resp = {
-        "element": 
-            {
-                "esValida": esValida,
-                "tipoTarjeta":isNominada?"Nominada":"Innominada",
-                "cedula":isNominada?datos[1].substring(9,18):null,
-                "version":isNominada?datos[1].substring(datos[1].length-4,datos[1].length-1):null,
-                "nrotarjeta":datos[2].substring(0,datos[2].length-1),
-                "mesanioexpiracion":datos[1].substring(datos[1].length-8,datos[1].length-4)
-            },
-        "errors":[],
-        "messages":[],
-        "hasErrors":false,
-        "hasMessages":false,
-        }
+        "element":
+        {
+            "esValida": esValida,
+            "tipoTarjeta": isNominada ? "Nominada" : "Innominada",
+            "cedula": isNominada ? datos[1].substring(9, 18) : null,
+            "version": isNominada ? datos[1].substring(datos[1].length - 4, datos[1].length - 1) : null,
+            "nrotarjeta": datos[2].substring(0, datos[2].length - 1),
+            "mesanioexpiracion": datos[1].substring(datos[1].length - 8, datos[1].length - 4)
+        },
+        "errors": [],
+        "messages": [],
+        "hasErrors": false,
+        "hasMessages": false,
+    }
     res.json(resp);
 }
 
@@ -170,7 +170,6 @@ posController.validarTarjeta = async (req, res) => {
             existe: existe
         }
     }
-
     try {
         const resp = await tarjeta.findOne({
             where: {
@@ -180,8 +179,8 @@ posController.validarTarjeta = async (req, res) => {
         })
         if (resp !== null) {
             //if (resp.estado == 'vigente') {
-                respTarjetaValida(true, resp.fecha_vencimiento)
-                res.status(200).json({ tarjetaValida })
+            respTarjetaValida(true, resp.fecha_vencimiento)
+            res.status(200).json({ tarjetaValida })
             //}
         }
         else {
@@ -249,7 +248,7 @@ posController.pagoCuota = async (req, res) => {
         "autorizacion_codigo":"000000000012",
         "monto_afecto_pagado":req.body.monto_abonado
     }
-    res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
+    return res.status(200).json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false });
 }
 
 posController.confirmacionFinanciamiento = async (req, res) => {
@@ -259,19 +258,19 @@ posController.confirmacionFinanciamiento = async (req, res) => {
     } = req.body
 
     codigo_resp = await ClienteService.confirmarCredito(nro_boleta);
-    
+
     const resp = {
-        "comercio":req.body.comercio,//se recibe
-        "local":req.body.local,//se recibe
-        "caja":req.body.caja,//se recibe,
-        "transaccion_nro":req.body.transaccion_nro,
-        "transaccion_fecha":req.body.transaccion_fecha,
-        "transaccion_hora":req.body.transaccion_hora,
-        "vendedor_nro":req.body.vendedor_nro,//se recibe
-        "transaccion_tipo":req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje":req.body.mensaje_codigo,
-        "codigo_respuesta":codigo_resp,
-        "boleta_nro":codigo_resp=="000"?nro_boleta:"No se encuentra"
+        "comercio": req.body.comercio,//se recibe
+        "local": req.body.local,//se recibe
+        "caja": req.body.caja,//se recibe,
+        "transaccion_nro": req.body.transaccion_nro,
+        "transaccion_fecha": req.body.transaccion_fecha,
+        "transaccion_hora": req.body.transaccion_hora,
+        "vendedor_nro": req.body.vendedor_nro,//se recibe
+        "transaccion_tipo": req.body.transaccion_tipo,//se recibe
+        "codigo_mensaje": req.body.mensaje_codigo,
+        "codigo_respuesta": codigo_resp,
+        "boleta_nro": codigo_resp == "000" ? nro_boleta : "No se encuentra"
     }
     res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false })
 }
