@@ -76,7 +76,6 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 regAgregados: clientes.length,
                 regTotalExistentes: respuesta.length,
                 clientes
-
             })
         } else {
             ///crea un nuevo arreglo para insertar en la db con lo que se recupera del archivo de exel
@@ -128,8 +127,7 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 msg: "Empresas creadas correctamente",
                 regAgregados: empresas.length,
                 regExistentes: respuesta.length,
-                dataExcel
-
+                empresas
             })
         }
     } catch (error) {
