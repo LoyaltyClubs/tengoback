@@ -113,7 +113,10 @@ const ClienteService = {
         }catch(error){
             return "001"
         }
+        //obtener total de deuda
+        
         //repartir monto en todas las cuotas
+        
         return "000";
     }
 }
