@@ -6,7 +6,6 @@ const { obtenerCiudad, obtenerRubro, obtenerPlan } = require('./obtenerCiudadExe
 const XLSX = require('xlsx')
 
 const cargar = {}
-
 cargar.cargarExcel = async (req = request, res = response) => {
     //valida que le documento exista
     if (!req.files || Object.keys(req.files).length === 0 || !req.files.archivo) {
@@ -14,12 +13,12 @@ cargar.cargarExcel = async (req = request, res = response) => {
         return;
     }
     const { archivo } = req.files
-    //mandar 'true'esCliente para registrar exel de clientes
+    //mandar 'true'esCliente en el form-data para registrar exel de clientes
     const { esCliente } = req.body
     const modeloCliente = []
     const modeloEmpresa = []
     try {
-        const nombre = await subirArchivo(archivo, ['xlsx'], '');
+        const nombre = await subirArchivo(archivo, ['xlsx'], '');//dandole nombre al archivo para registrarlo
         const worbook = XLSX.readFile(`src/uploads/${nombre}`);//ruta de donde se obtiene el documento
         const worbookSheets = worbook.SheetNames;
         const dataExcel = XLSX.utils.sheet_to_json(worbook.Sheets[worbookSheets[0]]);
@@ -27,12 +26,12 @@ cargar.cargarExcel = async (req = request, res = response) => {
         if (esCliente == 'true') {
             let empresaId = 0
             const resp = await empresa.findAll()
-
+            /// creando un nuevo arreglo para insertar en la db con lo que se recupera del archivo exel 
             dataExcel.forEach(dato => {
+                ///agregando el id de las empresas existentes al arreglo
                 resp.forEach(empresa => {
                     return empresaId = dato.nombre_de_empresa.replace(empresa.nombre, empresa.id)
                 })
-                console.log(empresaId);
                 modeloCliente.push({
                     nombre: dato.nombre,
                     apellido_paterno: dato.apellido_paterno,
@@ -60,13 +59,13 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 })
             })
             let carnets = [];
-            // sacar todos los carnets de la base de datos
             const respuesta = await cliente.findAll()
+            // sacar todos los carnets de la base de datos
             await respuesta.forEach(cliente => {
                 carnets.push(cliente.ci)
             })
+            /// verifica que los nuevos datos del exel no esten registrados en la base de datos por el ci
             const nuevo = modeloCliente.filter(cliente => !carnets.includes(cliente.ci))
-            console.log(nuevo, 'es el nuevo');
             const clientes = nuevo
 
             await cliente.bulkCreate(clientes)
@@ -80,7 +79,7 @@ cargar.cargarExcel = async (req = request, res = response) => {
 
             })
         } else {
-
+            ///crea un nuevo arreglo para insertar en la db con lo que se recupera del archivo de exel
             dataExcel.forEach(dato => {
                 modeloEmpresa.push({
                     nombre: dato.nombre,
@@ -102,17 +101,12 @@ cargar.cargarExcel = async (req = request, res = response) => {
 
                 })
             })
-            console.log(modeloEmpresa);
             let nit = []
             await modeloEmpresa.forEach(dato => {
                 nit.push(dato.nit)
             })
             //busca a las empresas por nit
-            const respuesta = await empresa.findAll({
-                where: {
-                    nit: nit
-                }
-            })
+            const respuesta = await empresa.findAll({ where: { nit: nit } })
             //ecuentra nits ya registrados
             let nitsEncontrados = [];
             await respuesta.forEach(empresa => {
@@ -137,10 +131,7 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 dataExcel
 
             })
-
-
         }
-
     } catch (error) {
         console.log(error);
         return res.status(400).json({
