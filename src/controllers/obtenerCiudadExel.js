@@ -27,9 +27,18 @@ const obtenerRubro = (dato) => {
     if (ciudad == 'farmacias') { return 8 }
     if (ciudad == 'tiendaderegalo') { return 9 }
 }
+const obtenerPlan = (dato) => {
+    let ciudad = dato.replace(' ', '').toLowerCase()
+    // console.log(ciudad, 'es el dato');
+    if (ciudad == 'corporativogold') { return 1 }
+    if (ciudad == 'corporativoplus') { return 2 }
+    if (ciudad == 'clienteindependiente') { return 3 }
+    if (ciudad == 'corporativofuncionario') { return 4 }
+}
 
 
 module.exports = {
     obtenerCiudad,
-    obtenerRubro
+    obtenerRubro,
+    obtenerPlan
 }

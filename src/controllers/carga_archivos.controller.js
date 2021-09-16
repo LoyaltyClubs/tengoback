@@ -2,7 +2,7 @@ const { request, response } = require('express')
 const cliente = require('../models').Cliente
 const empresa = require('../models').Empresa
 const { subirArchivo, borrarArchivo } = require('./uploads.controller')
-const { obtenerCiudad, obtenerRubro } = require('./obtenerCiudadExel')
+const { obtenerCiudad, obtenerRubro, obtenerPlan } = require('./obtenerCiudadExel')
 const XLSX = require('xlsx')
 
 const cargar = {}
@@ -81,35 +81,30 @@ cargar.cargarExcel = async (req = request, res = response) => {
             })
         } else {
 
-            // dataExcel.forEach(dato => {
-            //     modeloEmpresa.push({
-            //         nombre: dato.nombre,
-            //         apellido_paterno: dato.apellido_paterno,
-            //         apellido_materno: dato.apellido_materno,
-            //         estado_civil: dato.estado_civil,
-            //         fecha_nacimiento: dato.fecha_nacimiento,
-            //         sexo: dato.sexo,
-            //         ci: dato.cedula,
-            //         calle_particular: dato.calle_particular,
-            //         zona: dato.zona,
-            //         provincia: dato.provincia,
-            //         barrio: dato.barrio,
-            //         ciudad_id: obtenerCiudad(dato.ciudad),
-            //         telefono_fijo: dato.telefono,
-            //         telefono_celular: dato.celular,
-            //         email: dato.email,
-            //         nombre_referencia: dato.nombre_de_referencia,
-            //         telefono_referencia: dato.telefono_de_referencia,
-            //         tipo_tel_referencia: dato.tipo_telefono_de_referencia,
-            //         parentesco_referencia: dato.parentesco_de_referencia,
-            //         ciudad_referencia: dato.ciudad_de_referencia,
-            //         dia_pago: dato.dia_de_pago,
-            //         linea_credito: dato.linea_de_credito,
-            //         empresa_id: isNaN(empresaId) ? null : empresaId
-            //     })
-            // })
+            dataExcel.forEach(dato => {
+                modeloEmpresa.push({
+                    nombre: dato.nombre,
+                    razon_social: dato.razon_social,
+                    nit: dato.nit,
+                    rubro_id: obtenerRubro(dato.rubro),
+                    direccion: dato.direccion,
+                    ciudad_id: obtenerCiudad(dato.ciudad),
+                    fecha_cierre: dato.fecha_cierre,
+                    inicio_contrato: dato.fecha_inicio_de_contrato,
+                    fin_contrato: dato.fecha_fin_de_contrato,
+                    representante_legal: dato.representante_legal,
+                    email: dato.email,
+                    cargo: dato.cargo,
+                    ci: dato.cedula,
+                    expedicion: dato.expedicion,
+                    telefono: dato.telefono,
+                    plan_id: obtenerPlan(dato.plan)
+
+                })
+            })
+            console.log(modeloEmpresa);
             let nit = []
-            await dataExcel.forEach(dato => {
+            await modeloEmpresa.forEach(dato => {
                 nit.push(dato.nit)
             })
             //busca a las empresas por nit
@@ -128,7 +123,7 @@ cargar.cargarExcel = async (req = request, res = response) => {
                 return !nitsEncontrados.includes(carnet.toString())
             })
             //crea un arrglo con los nits que no esten registrados previamente
-            const empresas = await dataExcel.filter(dato => {
+            const empresas = await modeloEmpresa.filter(dato => {
                 return nitsSinRegistrar.includes(dato.nit)
             })
 
@@ -136,7 +131,7 @@ cargar.cargarExcel = async (req = request, res = response) => {
             borrarArchivo(nombre)
             return res.status(201).json({
                 ok: true,
-                msg: "Empresas creados correctamente",
+                msg: "Empresas creadas correctamente",
                 regAgregados: empresas.length,
                 regExistentes: respuesta.length,
                 dataExcel
