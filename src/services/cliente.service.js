@@ -1,7 +1,10 @@
 const credito = require('../models').Credito;
+const cliente = require('../models').Cliente;
 const modelCuota = require('../models').Cuota;
 const plan = require('../models').Plan;
 const cuota_mensual = require('../models').Cuota_Mensual;
+const pago = require('../models').Pago;
+const transaccion = require('../models').Transaccion;
 const { Op } = require("sequelize");
 const { QueryTypes } = require('sequelize');
 const Sequelize = require('sequelize');
@@ -75,11 +78,15 @@ const ClienteService = {
             credito.update({estado: "ACTIVA"},{where: {id: cred.id}})
         return "000";
     },
-    async calculoPago(datosCliente){
+    async calculoPago(datosCliente, transaccion_nro, transaccion_fecha){
         const datosPlan = await plan.findOne({where: {id: datosCliente.Empresa.plan_id}});
-        const consolidadoCuota = await cuota_mensual.sum('monto_total',{where: {estado: {[Op.not]: "PAGADO"}}})
+        const consolidadoCuota = await cuota_mensual.sum('monto_total',{where: {estado: {[Op.not]: "PAGADO"}}});
+        await transaccion.create({
+            nro: transaccion_nro,
+            fecha: transaccion_fecha,
+            ci: datosCliente.ci 
+        });
         var montoAdelantado = 0;
-        console.log("conso: "+consolidadoCuota);
         if (consolidadoCuota<1){
             for (var i=0;i<datosCliente.Creditos.length;i++){
                 montoAdelantado = montoAdelantado + parseFloat(datosCliente.Creditos[i].monto_cuota);
@@ -87,6 +94,27 @@ const ClienteService = {
             return montoAdelantado;
         }
         return consolidadoCuota;
+    },
+    async pagoCuota(transaccion_nro, transaccion_fecha, monto, nro_vendedor, forma_pago, nro_comprobante){
+        var tran = await transaccion.findOne({where: {nro: parseInt(transaccion_nro), fecha: transaccion_fecha}});
+        var datosCliente = await cliente.findOne({where: {ci: tran.ci}});
+        console.log(datosCliente);
+        try {
+            var pag = await pago.create({
+                nro_transaccion: transaccion_nro,
+                fecha_transaccion: new Date(),
+                nro_vendedor,
+                forma_pago,
+                monto_abonado: parseFloat(monto),
+                nro_comprobante,
+                ci_cliente: datosCliente.ci,
+                cliente_id: datosCliente.id
+            });
+        }catch(error){
+            return "001"
+        }
+        //repartir monto en todas las cuotas
+        return "000";
     }
 }
 

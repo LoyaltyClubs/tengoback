@@ -124,7 +124,7 @@ posController.consultaEstado = async (req, res) => {
 
     //Buscar cliente
     const datosCliente = await cliente.findOne({where: {ci: parseInt(rut_titular), deleted: false}, include: ['Creditos', 'Empresa']});
-    var total =await ClienteService.calculoPago(datosCliente);
+    var total =await ClienteService.calculoPago(datosCliente, transaccion_nro, transaccion_fecha);
 
     const respPago = {
         "comercio":comercio,//se recibe
@@ -152,7 +152,7 @@ posController.consultaEstado = async (req, res) => {
         "pie_minimo_pago_minimo":0.00,
         "saldo_pago_minimo":0.00,
         "permite_repactacion":0,
-        "deuda_total":100.00,
+        "deuda_total":(total*100).toString(),
         "pie_minimo_repactacion":0.00,
         "descuento":0.00,
         "saldo_repactacion":0.00,
@@ -214,7 +214,25 @@ posController.actualizarTarjeta = (req, res) => {
     );
 }
 
-posController.pagoCuota = (req, res) => {
+posController.pagoCuota = async (req, res) => {
+    const {
+        comercio,
+        local,
+        caja,
+        transaccion_nro,
+        transaccion_fecha,
+        transaccion_hora,
+        vendedor_nro,
+        transaccion_tipo,
+        mensaje_codigo,
+        tipo_pago,
+        monto_abonado,
+        nro_comprobante,
+        forma_pago
+    } = req.body
+
+    var resu = await ClienteService.pagoCuota(transaccion_nro,transaccion_fecha,monto_abonado,vendedor_nro,forma_pago,nro_comprobante)
+
     //tipo_pago = "ABO", forma_pago="1", nro_comprobante="3523523"
     const resp = {
         "comercio":req.body.comercio,//se recibe
@@ -226,8 +244,8 @@ posController.pagoCuota = (req, res) => {
         "vendedor_nro":req.body.vendedor_nro,//se recibe
         "transaccion_tipo":req.body.transaccion_tipo,//se recibe
         "mensaje_codigo":req.body.mensaje_codigo,
-        "respuesta_codigo":"0000",
-        "mensaje":"Pago realizado correctamente",
+        "respuesta_codigo":resu,
+        "mensaje":resu=="000"?"Pago realizado correctamente":"Ocurrio un problema con el pago",
         "autorizacion_codigo":"000000000012",
         "monto_afecto_pagado":req.body.monto_abonado
     }
@@ -257,21 +275,6 @@ posController.confirmacionFinanciamiento = async (req, res) => {
     }
     res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false })
 }
-posController.confirmacionPago = (req, res) => {
-    const resp = {
-        "comercio":req.body.comercio,//se recibe
-        "local":req.body.local,//se recibe
-        "caja":req.body.caja,//se recibe,
-        "transaccion_nro":req.body.transaccion_nro,
-        "transaccion_fecha":req.body.transaccion_fecha,
-        "transaccion_hora":req.body.transaccion_hora,
-        "vendedor_nro":req.body.vendedor_nro,//se recibe
-        "transaccion_tipo":req.body.transaccion_tipo,//se recibe
-        "codigo_mensaje":req.body.mensaje_codigo,
-        "codigo_respuesta":"0000",
-        "boleta_nro":"   "
-    }
-    res.json({ "element": resp, "errors": [], "messages": [], "hasError": false, "hasMessages": false })
-}
+
 
 module.exports = posController;
