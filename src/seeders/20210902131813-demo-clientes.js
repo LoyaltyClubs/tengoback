@@ -32,7 +32,7 @@ module.exports = {
       parentesco_referencia: "Madre",
       dia_pago: 5,
       linea_credito: 6800,
-      empresa_id: 1,
+      empresa_id: 5,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -57,7 +57,7 @@ module.exports = {
       parentesco_referencia: "Tía",
       dia_pago: 5,
       linea_credito: 6000,
-      empresa_id: 1,
+      empresa_id: 5,
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});
