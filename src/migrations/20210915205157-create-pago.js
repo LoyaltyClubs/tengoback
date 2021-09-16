@@ -1,42 +1,33 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Creditos', {
+    await queryInterface.createTable('Pagos', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      secuencia: {
-        type: Sequelize.STRING,
-      },
-      descripcion: {
+      nro_transaccion: {
         type: Sequelize.STRING
       },
-      fecha: {
+      fecha_transaccion: {
         type: Sequelize.DATE
       },
-      estado: {
-        type: Sequelize.STRING
-      },
-      nro_cuotas: {
+      nro_vendedor: {
         type: Sequelize.INTEGER
       },
-      monto_capital: {
+      forma_pago: {
+        type: Sequelize.INTEGER
+      },
+      monto_abonado: {
         type: Sequelize.DECIMAL(10,2)
       },
-      monto_financiado: {
-        type: Sequelize.DECIMAL(10,2)
+      nro_comprobante: {
+        type: Sequelize.STRING
       },
-      monto_cuota: {
-        type: Sequelize.DECIMAL(10,2)
-      },
-      mora: {
-        type: Sequelize.DECIMAL(10,2)
-      },
-      fecha_primer_cuota: {
-        type: Sequelize.DATE
+      ci_cliente: {
+        type: Sequelize.STRING
       },
       cliente_id: {
         type: Sequelize.INTEGER,
@@ -44,11 +35,6 @@ module.exports = {
           model: 'cliente',
           key: 'id'
         }
-
-      },
-      deleted: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
       },
       createdAt: {
         allowNull: false,
@@ -61,6 +47,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Creditos');
+    await queryInterface.dropTable('Pagos');
   }
 };

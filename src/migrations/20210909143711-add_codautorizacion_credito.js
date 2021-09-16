@@ -13,7 +13,7 @@ module.exports = {
         'Creditos',
         'cod_autorizacion',
         {
-          type: Sequelize.INTEGER
+          type: Sequelize.STRING
         }
       )
     ]);

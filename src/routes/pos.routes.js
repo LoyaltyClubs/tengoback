@@ -7,9 +7,9 @@ router.post('/leerTarjeta', posController.leerTarjeta);
 
 router.post('/financiamiento',posController.finaciamiento);
 
-router.post('/confirmacion', posController.confirmacionFinanciamiento);
+router.post('/consultaPago', posController.consultaEstado)
 
-router.post('/confirmacionPago', posController.confirmacionPago);
+router.post('/confirmacion', posController.confirmacionFinanciamiento);
 
 // muestra si la tarjeta esta activa 
 router.get('/state/:id', posController.validarTarjeta);

@@ -1,5 +1,21 @@
 const credito = require('../models').Credito;
+const cliente = require('../models').Cliente;
 const modelCuota = require('../models').Cuota;
+const plan = require('../models').Plan;
+const cuota_mensual = require('../models').Cuota_Mensual;
+const pago = require('../models').Pago;
+const transaccion = require('../models').Transaccion;
+const { Op } = require("sequelize");
+const { QueryTypes } = require('sequelize');
+const Sequelize = require('sequelize');
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.json')[env];
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
 const ClienteService = {
     calculoCuotas(interes, cuotas, capital){
         var i = parseFloat(interes)/100;
@@ -14,7 +30,7 @@ const ClienteService = {
         //Buscar si ese cliente tiene algun otro credito sin confirmar para usar el mismo cod_autorizacion
         //Sino tuviera crear uno nuevo
         var cred = await credito.findOne({where: {cliente_id: id, estado: 'SIN CONFIRMAR'}});
-        return cred!=null?cred.cod_autorizacion:123;        
+        return cred!=null?cred.cod_autorizacion:Date.now();        
     },
 
     async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id){
@@ -60,6 +76,47 @@ const ClienteService = {
             return "001";
         else
             credito.update({estado: "ACTIVA"},{where: {id: cred.id}})
+        return "000";
+    },
+    async calculoPago(datosCliente, transaccion_nro, transaccion_fecha){
+        const datosPlan = await plan.findOne({where: {id: datosCliente.Empresa.plan_id}});
+        const consolidadoCuota = await cuota_mensual.sum('monto_total',{where: {estado: {[Op.not]: "PAGADO"}}});
+        await transaccion.create({
+            nro: transaccion_nro,
+            fecha: transaccion_fecha,
+            ci: datosCliente.ci 
+        });
+        var montoAdelantado = 0;
+        if (consolidadoCuota<1){
+            for (var i=0;i<datosCliente.Creditos.length;i++){
+                montoAdelantado = montoAdelantado + parseFloat(datosCliente.Creditos[i].monto_cuota);
+            }
+            return montoAdelantado;
+        }
+        return consolidadoCuota;
+    },
+    async pagoCuota(transaccion_nro, transaccion_fecha, monto, nro_vendedor, forma_pago, nro_comprobante){
+        var tran = await transaccion.findOne({where: {nro: parseInt(transaccion_nro), fecha: transaccion_fecha}});
+        var datosCliente = await cliente.findOne({where: {ci: tran.ci}});
+        console.log(datosCliente);
+        try {
+            var pag = await pago.create({
+                nro_transaccion: transaccion_nro,
+                fecha_transaccion: new Date(),
+                nro_vendedor,
+                forma_pago,
+                monto_abonado: parseFloat(monto),
+                nro_comprobante,
+                ci_cliente: datosCliente.ci,
+                cliente_id: datosCliente.id
+            });
+        }catch(error){
+            return "001"
+        }
+        //obtener total de deuda
+        
+        //repartir monto en todas las cuotas
+        
         return "000";
     }
 }
