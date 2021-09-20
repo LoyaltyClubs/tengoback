@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     estado: DataTypes.STRING,
     credito_id: DataTypes.INTEGER,
     ci_cliente: DataTypes.STRING,
+    cuota_mensual_id: DataTypes.INTEGER,
     deleted: DataTypes.BOOLEAN
   }, {
     sequelize,

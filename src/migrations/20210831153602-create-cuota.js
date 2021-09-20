@@ -51,6 +51,13 @@ module.exports = {
       ci_cliente: {
         type: Sequelize.STRING,
       },
+      cuota_mensual_id:{
+        type: Sequelize.INTEGER,
+        referencesnces: {
+          model: 'Cuota_Mensual',
+          key: 'id'
+        }
+      },
       deleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
