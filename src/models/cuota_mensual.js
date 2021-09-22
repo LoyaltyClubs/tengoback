@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     fecha: DataTypes.DATEONLY,
     gastos_cobranza: DataTypes.DECIMAL,
     cliente_id: DataTypes.INTEGER,
-    ci_cliente: DataTypes.STRING
+    ci_cliente: DataTypes.STRING,
+    monto_capital: DataTypes.DECIMAL
   }, {
     sequelize,
     freezeTableName: true,

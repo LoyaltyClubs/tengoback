@@ -14,6 +14,9 @@ module.exports = {
       monto_total: {
         type: Sequelize.DECIMAL(10,2)
       },
+      monto_capital:{
+        type: Sequelize.DECIMAL(10,2)
+      },
       interes: {
         type: Sequelize.DECIMAL(10,2)
       },
