@@ -1,6 +1,7 @@
 const credito = require('../models').Credito;
 const cliente = require('../models').Cliente;
 const modelCuota = require('../models').Cuota;
+const tarjeta = require('../models').Tarjeta;
 const plan = require('../models').Plan;
 const cuota_mensual = require('../models').Cuota_Mensual;
 const pago = require('../models').Pago;
@@ -33,14 +34,18 @@ const ClienteService = {
         return cred!=null?cred.cod_autorizacion:Date.now();        
     },
 
-    async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id){
+    async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id, interes){
         //crear lista de todas las cuotas
         var listCuotas = [];
         var fecha_actual = new Date();
         var fecha_pago = new Date(fecha_actual.getFullYear(),fecha_actual.getMonth()+1,dia_pago);
         var fecha_cuotas = new Date(fecha_pago);
+        var capital_res = monto_financiado;
+        var interes_men = parseFloat(interes)/100;
         for (var i=1; i<=cant_cuotas;i++){
-            listCuotas.push({descripcion: i+" cuota", nro_de_cuota: i, monto: monto_de_cuota,fecha_limite:fecha_cuotas.setMonth(fecha_pago.getMonth()+i-1), estado: "POR PAGAR"})
+            var interes_cuota = capital_res * interes_men;
+            var capital_res = capital_res - interes_cuota;
+            listCuotas.push({descripcion: i+" cuota", nro_de_cuota: i, monto: monto_de_cuota,capital: capital_res,interes: interes_cuota,pendiente: monto_de_cuota,abonado: 0.00,fecha_limite:fecha_cuotas.setMonth(fecha_pago.getMonth()+i-1), estado: "POR PAGAR"})
             
         }
         //eliminar antigua cotizacion
@@ -74,8 +79,11 @@ const ClienteService = {
         const cred = await credito.findOne({where: {cod_autorizacion: parseInt(boleta), estado: 'SIN CONFIRMAR'}});
         if (cred==null)
             return "001";
-        else
+        else{
             credito.update({estado: "ACTIVA"},{where: {id: cred.id}})
+            var tar = tarjeta.findOne({where: {estado: "VIGENTE",cliente_id: cred.cliente_id}});
+            tarjeta.update({saldo: tar.saldo-cred.monto_capital},{where: {id: tar.id}});
+        }
         return "000";
     },
     async calculoPago(datosCliente, transaccion_nro, transaccion_fecha){
