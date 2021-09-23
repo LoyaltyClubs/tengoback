@@ -44,7 +44,14 @@ const ClienteService = {
         var interes_men = parseFloat(interes)/100;
         for (var i=1; i<=cant_cuotas;i++){
             var interes_cuota = capital_res * interes_men;
-            var capital_res = capital_res - interes_cuota;
+            var capital_res = capital_res - monto_de_cuota + interes_cuota;
+            if (i==cant_cuotas-1){
+                var proxInte = capital_res * interes_men;
+                var proxCap = capital_res - monto_de_cuota + proxInte;
+                capital_res = capital_res + Math.abs(proxCap);
+            }
+            capital_res = i==cant_cuotas?0:capital_res;
+            
             listCuotas.push({descripcion: i+" cuota", nro_de_cuota: i, monto: monto_de_cuota,capital: capital_res,interes: interes_cuota,pendiente: monto_de_cuota,abonado: 0.00,fecha_limite:fecha_cuotas.setMonth(fecha_pago.getMonth()+i-1), estado: "POR PAGAR"})
             
         }
