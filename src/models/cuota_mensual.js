@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   CuotaMensual.init({
-    name: DataTypes.STRING,
+    nombre: DataTypes.STRING,
     monto_total: DataTypes.DECIMAL,
     interes: DataTypes.DECIMAL,
     estado: DataTypes.STRING,

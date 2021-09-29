@@ -19,6 +19,7 @@ provinciaController.create = (req, res) => {
     return provincia.create({
         nombre: req.body.nombre,
         ciudad_id: req.body.ciudad_id,
+        estado: true,
         createdAt: new Date(),
         updatedAt: new Date()
     }).then(provincia => res.status(200).send(provincia))

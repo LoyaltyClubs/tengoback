@@ -34,7 +34,7 @@ const ClienteService = {
         return cred!=null?cred.cod_autorizacion:Date.now();        
     },
 
-    async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id, interes){
+    async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id, interes, ci){
         //crear lista de todas las cuotas
         var listCuotas = [];
         var fecha_actual = new Date();
@@ -42,6 +42,7 @@ const ClienteService = {
         var fecha_cuotas = new Date(fecha_pago);
         var capital_res = monto_financiado;
         var interes_men = parseFloat(interes)/100;
+        console.log(ci);
         for (var i=1; i<=cant_cuotas;i++){
             var interes_cuota = capital_res * interes_men;
             var capital_res = capital_res - monto_de_cuota + interes_cuota;
@@ -52,7 +53,7 @@ const ClienteService = {
             }
             capital_res = i==cant_cuotas?0:capital_res;
             
-            listCuotas.push({descripcion: i+" cuota", nro_de_cuota: i, monto: monto_de_cuota,capital: capital_res,interes: interes_cuota,pendiente: monto_de_cuota,abonado: 0.00,fecha_limite:fecha_cuotas.setMonth(fecha_pago.getMonth()+i-1), estado: "POR PAGAR"})
+            listCuotas.push({descripcion: i+" cuota", nro_de_cuota: i, monto: monto_de_cuota,capital: capital_res,interes: interes_cuota,pendiente: monto_de_cuota,abonado: 0.00,fecha_limite:fecha_cuotas.setMonth(fecha_pago.getMonth()+i-1), estado: "POR PAGAR",ci_cliente: ci})
             
         }
         //eliminar antigua cotizacion
@@ -62,7 +63,7 @@ const ClienteService = {
             await credito.destroy({where: {id: cred.id}});
         }
             
-        return credito.create({
+        return credito.create({ 
             descripcion: descripcion,
             secuencia: 1,
             fecha: fecha_actual,
@@ -88,8 +89,9 @@ const ClienteService = {
             return "001";
         else{
             credito.update({estado: "ACTIVA"},{where: {id: cred.id}})
-            var tar = tarjeta.findOne({where: {estado: "VIGENTE",cliente_id: cred.cliente_id}});
-            tarjeta.update({saldo: tar.saldo-cred.monto_capital},{where: {id: tar.id}});
+            var tar = await tarjeta.findOne({where: {estado: "Vigente",cliente_id: cred.cliente_id}});
+            console.log(tar);
+            tarjeta.update({saldo: tar.saldo-cred.monto_capital},{where: {id: tar.id}}  );
         }
         return "000";
     },
