@@ -83,6 +83,10 @@ module.exports = {
           key: 'id'
         }
       },
+      dias_gracia: {
+        type: Sequelize.INTEGER,
+        defaultValue: 2
+      },
       deleted: {
         type: Sequelize.BOOLEAN,
         allowNull: false,

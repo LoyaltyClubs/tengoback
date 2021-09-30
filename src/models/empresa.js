@@ -43,6 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     telefono: DataTypes.STRING,
     estado: DataTypes.BOOLEAN,
     plan_id: DataTypes.INTEGER,
+    dias_gracia: DataTypes.INTEGER,
     deleted: DataTypes.BOOLEAN
   }, {
     freezeTableName: true,
