@@ -11,7 +11,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-     await queryInterface.bulkInsert('Setting', [
+     await queryInterface.bulkInsert('Settings', [
       {
         minimo_vencimiento: 10,
         minimo_mantenimiento: 100,
@@ -28,6 +28,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-     await queryInterface.bulkDelete('Setting', null, { });
+     await queryInterface.bulkDelete('Settings', null, { });
   }
 };

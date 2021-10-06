@@ -70,7 +70,7 @@ posController.finaciamiento = async (req, res) => {
     var total_credito = monto_cuota*parseInt(cantidad_cuotas);
     const fecha = new Date();
     const cod_autorizacion = await ClienteService.obtenerCodAutorizacion(datosCliente.Cliente.id);
-    var cred = await ClienteService.crearCreditoCuotas(cod_autorizacion,"Compra en "+comercio,cantidad_cuotas,datosCliente.Cliente.dia_pago,monto_cuota,monto_financia,total_credito,datosCliente.Cliente.id,planCliente.Plan.interes,datosCliente.Cliente.ci);
+    var cred = await ClienteService.crearCreditoCuotas(cod_autorizacion,"Compra en "+comercio,cantidad_cuotas,datosCliente.Cliente.dia_pago,monto_cuota,monto_financia,total_credito,datosCliente.Cliente.id,planCliente.Plan.interes,datosCliente.Cliente.ci, planCliente);
    
 
     const resp = {

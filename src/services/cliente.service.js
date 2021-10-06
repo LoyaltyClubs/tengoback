@@ -34,12 +34,17 @@ const ClienteService = {
         return cred!=null?cred.cod_autorizacion:Date.now();        
     },
 
-    async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id, interes, ci){
+    async crearCreditoCuotas(cod_autorizacion,descripcion,cant_cuotas,dia_pago,monto_de_cuota, monto_financiado, total_credito,cliente_id, interes, ci, planCliente){
         //crear lista de todas las cuotas
         var listCuotas = [];
         var fecha_actual = new Date();
+        //tiene que haber fecha de cierre de la empresa, sacar la diferencia entre esa fecha de cierre y la fecha de pago
+        // si la fecha de la transaccion con la fecha de pago es menor pasar al siguiente mes
         var fecha_pago = new Date(fecha_actual.getFullYear(),fecha_actual.getMonth()+1,dia_pago);
         var fecha_cuotas = new Date(fecha_pago);
+        var fecha_cierre = new Date(fecha_actual.getFullYear(),fecha_actual.getDay()<=planCliente.dia_pago?fecha_actual.getMonth():fecha_actual.getMonth()+1, planCliente.fecha_cierre)
+        if (fecha_pago<fecha_cierre)
+            fecha_pago.setMonth(fecha_pago.getMonth()+1);
         var capital_res = monto_financiado;
         var interes_men = parseFloat(interes)/100;
         console.log(ci);
@@ -89,7 +94,7 @@ const ClienteService = {
             return "001";
         else{
             credito.update({estado: "ACTIVA"},{where: {id: cred.id}})
-            var tar = await tarjeta.findOne({where: {estado: "Vigente",cliente_id: cred.cliente_id}});
+            var tar = await tarjeta.findOne({where: {estado: "VIGENTE",cliente_id: cred.cliente_id}});
             console.log(tar);
             tarjeta.update({saldo: tar.saldo-cred.monto_capital},{where: {id: tar.id}}  );
         }
