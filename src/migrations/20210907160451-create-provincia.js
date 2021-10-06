@@ -12,7 +12,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       estado: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       ciudad_id: {
         type: Sequelize.INTEGER,
@@ -22,7 +23,8 @@ module.exports = {
         }
       },
       deleted: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,

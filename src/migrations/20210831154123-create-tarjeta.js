@@ -15,7 +15,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       estado: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: "Vigente"
       },
       deleted: {
         type: Sequelize.BOOLEAN,
