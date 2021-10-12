@@ -122,7 +122,7 @@ const ClienteService = {
         var datosCliente = await cliente.findOne({where: {ci: tran.ci}});
         console.log(datosCliente);
         try {
-            var pag = await pago.create({
+            /*var pag = await pago.create({
                 nro_transaccion: transaccion_nro,
                 fecha_transaccion: new Date(),
                 nro_vendedor,
@@ -131,7 +131,9 @@ const ClienteService = {
                 nro_comprobante,
                 ci_cliente: datosCliente.ci,
                 cliente_id: datosCliente.id
-            });
+            });*/
+            var cuotas_mensuales = await cuota_mensual.findAll({where: {ci_cliente: tran.ci, estado: {[Op.not]: "PAGADO"}}});
+            console.log(cuotas_mensuales);
         }catch(error){
             return "001"
         }
