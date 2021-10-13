@@ -85,6 +85,9 @@ module.exports = {
       estado: {
         type: Sequelize.STRING
       },
+      estado_crediticio: {
+        type: Sequelize.STRING
+      },
       empresa_id: {
         type: Sequelize.INTEGER,
         references: {

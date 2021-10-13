@@ -8,9 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      minimo_vencimiento: {
-        type: Sequelize.INTEGER
-      },
       minimo_mantenimiento: {
         type: Sequelize.INTEGER
       },

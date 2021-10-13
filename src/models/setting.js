@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Setting.init({
-    minimo_vencimiento: DataTypes.INTEGER,
     minimo_mantenimiento: DataTypes.INTEGER
   }, {
     sequelize,

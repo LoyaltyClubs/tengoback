@@ -33,5 +33,7 @@ app.use("/api/tarjeta", require("./routes/tarjeta.routes"))
 app.use("/api/carga_archivos", require("./routes/carga_archivos.routes"))
 app.use("/api/pago", require("./routes/pago.routes"))
 app.use("/api/provincia", require("./routes/provincia.routes"))
+app.use("/api/cuota_mensual", require("./routes/cuota_mensual.routes"))
+app.use("/api/settings", require("./routes/settings.routes"))
 
 module.exports = app;

@@ -13,7 +13,6 @@ module.exports = {
     */
      await queryInterface.bulkInsert('Settings', [
       {
-        minimo_vencimiento: 10,
         minimo_mantenimiento: 100,
         createdAt: new Date(),
         updatedAt: new Date()
