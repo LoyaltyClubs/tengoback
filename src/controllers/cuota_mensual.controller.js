@@ -3,7 +3,7 @@ const cuota_mensual = require('../models').CuotaMensual;
 const cuota_mensualController = { }
 
 cuota_mensualController.get = (req, res) => {
-    return cuota_mensual.findAll({}).
+    return cuota_mensual.findAll().
         then(cuota_mensual => res.status(200).send(cuota_mensual))
         .catch(error => res.status(400).send(error));
 }

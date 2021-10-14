@@ -3,7 +3,7 @@ const settings = require('../models').settings;
 const settingsController = {}
 
 settingsController.get = (req, res) => {
-    return settings.findAll({}).
+    return settings.findAll().
     then(settings => res.status(200).send(settings))
     .catch(error => res.status(400).send(error));
 }

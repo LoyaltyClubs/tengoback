@@ -2,7 +2,7 @@ const pago = require('../models').Pago;
 const pagoController = { }
 
 pagoController.get = (req, res) => {
-    return pago.findAll({}).
+    return pago.findAll().
         then(pago => res.status(200).send(pago))
         .catch(error => res.status(400).send(error));
 }
