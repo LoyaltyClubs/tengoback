@@ -118,11 +118,12 @@ const ClienteService = {
         return consolidadoCuota;
     },
     async pagoCuota(transaccion_nro, transaccion_fecha, monto, nro_vendedor, forma_pago, nro_comprobante){
+        var monto_sobrante = monto;
         var tran = await transaccion.findOne({where: {nro: parseInt(transaccion_nro), fecha: transaccion_fecha}});
         var datosCliente = await cliente.findOne({where: {ci: tran.ci}});
         console.log(datosCliente);
         try {
-            /*var pag = await pago.create({
+            var pag = await pago.create({
                 nro_transaccion: transaccion_nro,
                 fecha_transaccion: new Date(),
                 nro_vendedor,
@@ -131,8 +132,30 @@ const ClienteService = {
                 nro_comprobante,
                 ci_cliente: datosCliente.ci,
                 cliente_id: datosCliente.id
-            });*/
-            var cuotas_mensuales = await cuota_mensual.findAll({where: {ci_cliente: tran.ci, estado: {[Op.not]: "PAGADO"}}});
+            });
+            var cuotas_mensuales = await cuota_mensual.findAll({order: [['fecha','ASC']], where: {ci_cliente: tran.ci, estado: {[Op.not]: "PAGADO"}}});
+            for (var i = 0; i<cuotas_mensuales.length;i++){
+                //En caso que tenga dinero de mas no hace nada lo ignora ya que adelanto es otro tipo
+                if (cuotas_mensuales[i].monto_total <= monto_sobrante){
+                    cuota_mensual.update({estado:"PAGADO", updatedAt: new Date()},
+                    {where: {id: cuotas_mensuales[i].id}});
+                    //tambien poner abonado el monto de la cuota
+                    modelCuota.update({estado: "PAGADO",pendiente:0},{where: {cuota_mensual_id}});
+                    monto_sobrante = monto_sobrante - cuotas_mensuales[i].monto_total;
+                }else{
+                    //el monto sobrante tiene que ser menor y tiene que haber cuota mensual pendiente
+                    monto_sobrante=monto_sobrante-cuotas_mensuales[i].mora;
+                    var cmora = monto_sobrante>=0?0:cuotas_mensuales[i]-monto_sobrante;
+                    var ccapital=0;
+                    if (monto_sobrante>0){
+                        //adicionar resta de gastos de cobranza
+                        //quitar al capital
+                        ccapital = cuotas_mensuales[i].monto_capital-monto_sobrante;
+                    }
+                    cuota_mensual.update({mora:cmora,monto_total:cuotas_mensuales[i].monto_total-cmora,monto_capital: ccapital=0?cuotas_mensuales[i].monto_capital:ccapital, updatedAt: new Date()},
+                        {where: {id: cuotas_mensuales[i].id}});
+                }
+            }
             console.log(cuotas_mensuales);
         }catch(error){
             return "001"

@@ -1,4 +1,4 @@
-const cuota_mensual = require('../models').CuotaMensual;
+const cuota_mensual = require('../models').Cuota_Mensual;
 
 const cuota_mensualController = { }
 

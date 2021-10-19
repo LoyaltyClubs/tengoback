@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Credito, {
         foreignKey: 'credito_id'
       });
+      this.belongsTo(models.Cuota_Mensual, {
+        foreignKey: 'cuota_mensual_id'
+      });
     }
   };
   Cuota.init({
